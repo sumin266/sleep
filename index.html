@@ -507,7 +507,6 @@
         <div class="card">
           <div class="history-head">
             <h2 class="title" style="margin:0;">시간별 체크</h2>
-            <button id="checksToggleBtn" class="toggle-btn" type="button" aria-label="시간별 체크 접기/펼치기"><span class="toggle-icon">&lt;</span></button>
           </div>
           <div style="margin-top: 10px;">
             <label>체크 시점 컨디션 (나쁨 -> 좋음, 오른쪽이 초록)</label>
@@ -520,40 +519,8 @@
             </div>
           </div>
           <div style="margin-top: 10px;">
-            <label for="checkNote">비고 (선택)</label>
-            <input id="checkNote" type="text" placeholder="메모를 적어도 되고 안 적어도 됩니다" />
-          </div>
-          <div style="margin-top: 10px;">
-            <button id="addCheckBtn" class="btn" type="button">시간별 체크 추가</button>
-          </div>
-          <div id="checksCollapsible">
-            <p id="checksAvg" class="muted" style="margin-top: 10px;">평균 컨디션: -</p>
-            <ul id="checksList" class="history-list" style="margin-top: 8px;"></ul>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2 class="title">스케줄 부하 입력</h2>
-          <div style="margin-top: 10px;">
-            <label for="scheduleRange">시간 (예: 12-13)</label>
-            <input id="scheduleRange" type="text" placeholder="12-13" />
-          </div>
-          <div style="margin-top: 10px;">
-            <label for="scheduleCategory">카테고리</label>
-            <select id="scheduleCategory">
-              <option value="class">수업</option>
-              <option value="study">공부</option>
-              <option value="assignment">과제</option>
-              <option value="exercise">운동</option>
-              <option value="parttime">알바</option>
-              <option value="meeting">회의/모임</option>
-              <option value="commute">이동</option>
-              <option value="rest">휴식</option>
-            </select>
-          </div>
-          <div style="margin-top: 10px;">
-            <label>부하 정도 선택 (낮음 -> 높음)</label>
-            <div id="scheduleLoadPicker" class="condition-picker">
+            <label>체크 시점 부하 (낮음 -> 높음)</label>
+            <div id="checkLoadPicker" class="condition-picker">
               <button type="button" class="condition-btn" data-load="1">1</button>
               <button type="button" class="condition-btn" data-load="2">2</button>
               <button type="button" class="condition-btn" data-load="3">3</button>
@@ -561,15 +528,50 @@
               <button type="button" class="condition-btn" data-load="5">5</button>
             </div>
           </div>
+          <div class="row" style="margin-top: 10px;">
+            <div>
+              <label for="scheduleCategory">카테고리</label>
+              <select id="scheduleCategory">
+                <option value="">선택안함</option>
+                <option value="class">수업</option>
+                <option value="study">공부</option>
+                <option value="assignment">과제</option>
+                <option value="exercise">운동</option>
+                <option value="parttime">알바</option>
+                <option value="meeting">회의/모임</option>
+                <option value="commute">이동</option>
+                <option value="rest">휴식</option>
+              </select>
+            </div>
+            <div>
+              <label for="scheduleRange">시간</label>
+              <input id="scheduleRange" type="text" placeholder="12-13" />
+            </div>
+            <div>
+              <label for="scheduleLoad">부하</label>
+              <select id="scheduleLoad">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
           <div style="margin-top: 10px;">
             <label for="scheduleText">스케줄 내용 (선택)</label>
-            <input id="scheduleText" type="text" placeholder="비워도 저장됩니다" />
+            <input id="scheduleText" type="text" placeholder="비워도 됩니다" />
           </div>
           <div style="margin-top: 10px;">
-            <button id="addScheduleBtn" class="btn" type="button">스케줄 추가</button>
+            <button id="addCheckBtn" class="btn" type="button">시간별 체크 추가</button>
           </div>
-          <p id="scheduleLoadSummary" class="muted" style="margin-top: 10px;">오늘 스케줄 부하: -</p>
-          <ul id="scheduleList" class="history-list" style="margin-top: 8px;"></ul>
+          <div class="history-head" style="margin-top:10px;">
+            <p id="checksAvg" class="muted" style="margin:0;">평균 컨디션: - / 평균 부하: -</p>
+            <button id="checksToggleBtn" class="toggle-btn" type="button" aria-label="시간별 체크 접기/펼치기"><span class="toggle-icon">&lt;</span></button>
+          </div>
+          <div id="checksCollapsible">
+            <ul id="checksList" class="history-list" style="margin-top: 8px;"></ul>
+          </div>
         </div>
 
         <div class="card">
@@ -643,7 +645,7 @@
     const LEGACY_STORAGE_KEY = "sleepConditionRecords_v1";
     const GOAL_KEY = "sleepGoalHours_v1";
     let selectedCondition = 3;
-    let selectedScheduleLoad = 3;
+    let selectedCheckLoad = 3;
     let records = loadRecords();
 
     const els = {
@@ -665,7 +667,7 @@
       sleepHoursAuto: document.getElementById("sleepHoursAuto"),
       todayWakeCount: document.getElementById("todayWakeCount"),
       conditionPicker: document.getElementById("conditionPicker"),
-      checkNote: document.getElementById("checkNote"),
+      checkLoadPicker: document.getElementById("checkLoadPicker"),
       addCheckBtn: document.getElementById("addCheckBtn"),
       checksToggleBtn: document.getElementById("checksToggleBtn"),
       checksCollapsible: document.getElementById("checksCollapsible"),
@@ -673,11 +675,8 @@
       checksList: document.getElementById("checksList"),
       scheduleRange: document.getElementById("scheduleRange"),
       scheduleCategory: document.getElementById("scheduleCategory"),
-      scheduleLoadPicker: document.getElementById("scheduleLoadPicker"),
+      scheduleLoad: document.getElementById("scheduleLoad"),
       scheduleText: document.getElementById("scheduleText"),
-      addScheduleBtn: document.getElementById("addScheduleBtn"),
-      scheduleLoadSummary: document.getElementById("scheduleLoadSummary"),
-      scheduleList: document.getElementById("scheduleList"),
       historyToggleBtn: document.getElementById("historyToggleBtn"),
       historyList: document.getElementById("historyList"),
       monthGrid: document.getElementById("monthGrid"),
@@ -695,8 +694,7 @@
       bindDailyAutoSave();
       bindSleepToggle();
       bindCheckAdd();
-      bindScheduleAdd();
-      bindScheduleLoadPicker();
+      bindCheckLoadPicker();
       bindHistoryToggle();
       bindChecksToggle();
       initDefaults();
@@ -747,57 +745,52 @@
       els.addCheckBtn.addEventListener("click", () => {
         const date = els.recordDate.value;
         const time = currentTimeHHMM();
-        const note = els.checkNote.value.trim();
+        const scheduleCategory = els.scheduleCategory.value;
+        const scheduleRange = els.scheduleRange.value.trim();
+        const scheduleLoad = Number(els.scheduleLoad.value || 3);
+        const scheduleText = els.scheduleText.value.trim();
         if (!date) return alert("기록 날짜를 선택해주세요.");
 
         const record = findOrCreateRecordByDate(date);
-        record.checks.push({ id: "c_" + Date.now() + "_" + Math.floor(Math.random() * 100000), time, condition: selectedCondition, note });
+        record.checks.push({ id: "c_" + Date.now() + "_" + Math.floor(Math.random() * 100000), time, condition: selectedCondition, load: selectedCheckLoad });
+
+        if (scheduleCategory || scheduleRange || scheduleText) {
+          if (!scheduleCategory) return alert("스케줄 카테고리를 선택해주세요.");
+          if (!scheduleRange) return alert("스케줄 시간을 12-13 형식으로 입력해주세요.");
+          const hours = calcSleepHoursFromRange(scheduleRange);
+          if (!Number.isFinite(hours) || hours <= 0) return alert("스케줄 시간 범위를 확인해주세요.");
+          const [startRaw, endRaw] = scheduleRange.split("-").map(v => v.trim());
+          record.schedules.push({
+            id: "s_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
+            start: startRaw || "",
+            end: endRaw || "",
+            range: scheduleRange,
+            category: scheduleCategory,
+            hours,
+            text: scheduleText,
+            load: scheduleLoad
+          });
+          record.schedules.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
+          els.scheduleCategory.value = "";
+          els.scheduleRange.value = "";
+          els.scheduleLoad.value = "3";
+          els.scheduleText.value = "";
+        }
+
         record.checks.sort((a, b) => a.time.localeCompare(b.time));
         record.condition = average(record.checks.map(c => c.condition));
         saveRecords();
         renderChecksForDate(date);
         renderAll();
-        els.checkNote.value = "";
       });
 
     }
 
-    function bindScheduleAdd() {
-      els.addScheduleBtn.addEventListener("click", () => {
-        const date = els.recordDate.value;
-        const range = els.scheduleRange.value.trim();
-        const category = els.scheduleCategory.value;
-        const text = els.scheduleText.value.trim();
-        if (!date) return alert("기록 날짜가 없습니다.");
-        if (!range) return alert("시간을 12-13 형식으로 입력해주세요.");
-        const hours = calcSleepHoursFromRange(range);
-        if (!Number.isFinite(hours) || hours <= 0) return alert("시간 범위를 확인해주세요.");
-        const [startRaw, endRaw] = range.split("-").map(v => v.trim());
-
-        const record = findOrCreateRecordByDate(date);
-        record.schedules.push({
-          id: "s_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
-          start: startRaw || "",
-          end: endRaw || "",
-          range,
-          category,
-          hours,
-          text,
-          load: selectedScheduleLoad
-        });
-        record.schedules.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
-        saveRecords();
-        renderSchedulesForDate(date);
-        renderAll();
-        els.scheduleText.value = "";
-      });
-    }
-
-    function bindScheduleLoadPicker() {
-      const buttons = els.scheduleLoadPicker.querySelectorAll(".condition-btn");
+    function bindCheckLoadPicker() {
+      const buttons = els.checkLoadPicker.querySelectorAll(".condition-btn");
       buttons.forEach(btn => {
         btn.addEventListener("click", () => {
-          selectedScheduleLoad = Number(btn.dataset.load);
+          selectedCheckLoad = Number(btn.dataset.load);
           buttons.forEach(b => b.classList.toggle("selected", b === btn));
         });
       });
@@ -840,13 +833,12 @@
       const now = new Date();
       const nowDate = now.toISOString().slice(0, 10);
       els.recordDate.value = nowDate;
-      els.scheduleRange.value = "09-10";
+      els.scheduleRange.value = "";
       updateRecordTime();
       const savedGoal = localStorage.getItem(GOAL_KEY);
       if (savedGoal) els.goalHoursInput.value = savedGoal;
       hydrateTodayForm(nowDate);
       renderChecksForDate(nowDate);
-      renderSchedulesForDate(nowDate);
     }
 
     function hydrateTodayForm(date) {
@@ -981,44 +973,20 @@
       els.checksList.innerHTML = "";
       if (!checks.length) {
         els.checksList.innerHTML = "<li class='history-item'>시간별 체크가 없습니다.</li>";
-        els.checksAvg.textContent = "평균 컨디션: -";
+        els.checksAvg.textContent = "평균 컨디션: - / 평균 부하: -";
         return;
       }
       checks.forEach(c => {
         const li = document.createElement("li");
         li.className = "history-item";
-        li.innerHTML = "<div><strong>" + c.time + "</strong> 컨디션 체크" +
-          (c.note ? "<br><span style='color:#64748b;'>" + escapeHtml(c.note) + "</span>" : "") +
-          "</div>" +
+        li.innerHTML = "<div><strong>" + c.time + "</strong> 컨디션 체크</div>" +
           "<div><span class='dot' style='background:" + colorByCondition(c.condition) + ";'></span>컨디션 " + trimHour(c.condition) +
+          " / 부하 " + trimHour(c.load || 3) +
           " <button class='check-delete' data-id='" + c.id + "' type='button'>x</button></div>";
         els.checksList.appendChild(li);
       });
-      els.checksAvg.textContent = "평균 컨디션: " + trimHour(average(checks.map(c => c.condition)));
+      els.checksAvg.textContent = "평균 컨디션: " + trimHour(average(checks.map(c => c.condition))) + " / 평균 부하: " + trimHour(average(checks.map(c => Number(c.load || 3))));
       bindDeleteCheck(date);
-    }
-
-    function renderSchedulesForDate(date) {
-      const record = records.find(r => r.date === date);
-      const schedules = record && Array.isArray(record.schedules) ? record.schedules : [];
-      els.scheduleList.innerHTML = "";
-      if (!schedules.length) {
-        els.scheduleList.innerHTML = "<li class='history-item'>스케줄 입력이 없습니다.</li>";
-        els.scheduleLoadSummary.textContent = "오늘 스케줄 부하: -";
-        return;
-      }
-
-      schedules.forEach(s => {
-        const li = document.createElement("li");
-        li.className = "schedule-item";
-        const start = s.start || s.time || "--:--";
-        const end = s.end || "--:--";
-        const categoryLabel = scheduleCategoryLabel(s.category || "study");
-        li.innerHTML = "<div><strong>" + start + " - " + end + "</strong> [" + categoryLabel + "] " + escapeHtml(s.text || "") + "</div><div>부하 " + trimHour(s.load) + "</div>";
-        els.scheduleList.appendChild(li);
-      });
-      const avgLoad = average(schedules.map(s => s.load));
-      els.scheduleLoadSummary.textContent = "오늘 스케줄 부하: 평균 " + trimHour(avgLoad) + " / 5 (" + schedules.length + "개)";
     }
 
     function bindDeleteCheck(date) {

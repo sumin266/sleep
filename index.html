@@ -62,6 +62,7 @@
       font-size: 13px;
       line-height: 1.4;
     }
+    #stateDesc { display: none; }
 
     .row {
       display: flex;
@@ -196,7 +197,7 @@
     }
 
     .state-badge {
-      display: inline-block;
+      display: none;
       margin-top: 10px;
       padding: 6px 10px;
       border-radius: 999px;
@@ -276,6 +277,14 @@
       cursor: pointer;
       color: #ef4444;
       font-weight: 800;
+    }
+    .schedule-item {
+      padding: 10px 2px;
+      border-bottom: 1px solid #eef2f7;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
     }
     .history-item {
       padding: 11px 2px;
@@ -468,63 +477,115 @@
 
       <section id="tab2" class="tab-panel">
         <div class="card">
-          <h2 class="title">수면기록</h2>
-          <p class="record-time">기록 시각: <span id="recordTime"></span></p>
-          <div style="margin-top: 10px; display:none;">
-            <label for="recordDate">기록 날짜</label>
-            <input id="recordDate" type="date" disabled />
+          <div class="history-head">
+            <h2 class="title" style="margin:0;">수면기록</h2>
+            <button id="sleepToggleBtn" class="toggle-btn" type="button" aria-label="수면기록 접기/펼치기"><span class="toggle-icon">&lt;</span></button>
           </div>
-          <div class="row" style="margin-top: 10px;">
-            <div>
-              <label for="sleepRange">수면시간 입력 (예: 12-13)</label>
-              <input id="sleepRange" type="text" placeholder="12-13" />
+          <div id="sleepCollapsible">
+            <p class="record-time">기록 시각: <span id="recordTime"></span></p>
+            <div style="margin-top: 10px; display:none;">
+              <label for="recordDate">기록 날짜</label>
+              <input id="recordDate" type="date" disabled />
             </div>
-          </div>
-          <div style="margin-top: 10px; display:none;">
-            <label for="sleepHoursAuto">자동 계산 수면시간</label>
-            <input id="sleepHoursAuto" type="text" readonly placeholder="자동 계산됨" />
-          </div>
-          <div style="margin-top: 10px;">
-            <label for="todayWakeCount">기상 횟수</label>
-            <input id="todayWakeCount" type="number" min="0" max="20" step="1" placeholder="1" />
-          </div>
-          <div style="margin-top: 14px;">
-            <button class="btn save-day-btn" type="button">그날 기록 저장</button>
+            <div class="row" style="margin-top: 10px;">
+              <div>
+                <label for="sleepRange">수면시간 입력 (예: 12-13)</label>
+                <input id="sleepRange" type="text" placeholder="12-13" />
+              </div>
+            </div>
+            <div style="margin-top: 10px; display:none;">
+              <label for="sleepHoursAuto">자동 계산 수면시간</label>
+              <input id="sleepHoursAuto" type="text" readonly placeholder="자동 계산됨" />
+            </div>
+            <div style="margin-top: 10px;">
+              <label for="todayWakeCount">기상 횟수</label>
+              <input id="todayWakeCount" type="number" min="0" max="20" step="1" placeholder="1" />
+            </div>
           </div>
         </div>
 
         <div class="card">
-          <h2 class="title">시간별 체크</h2>
+          <div class="history-head">
+            <h2 class="title" style="margin:0;">시간별 체크</h2>
+            <button id="checksToggleBtn" class="toggle-btn" type="button" aria-label="시간별 체크 접기/펼치기"><span class="toggle-icon">&lt;</span></button>
+          </div>
           <div style="margin-top: 10px;">
             <label>체크 시점 컨디션 (나쁨 -> 좋음, 오른쪽이 초록)</label>
             <div id="conditionPicker" class="condition-picker">
-              <button type="button" class="condition-btn" data-score="2">나쁨</button>
               <button type="button" class="condition-btn" data-score="1">최악</button>
+              <button type="button" class="condition-btn" data-score="2">나쁨</button>
               <button type="button" class="condition-btn" data-score="3">보통</button>
               <button type="button" class="condition-btn" data-score="4">좋음</button>
               <button type="button" class="condition-btn" data-score="5">최고</button>
             </div>
           </div>
           <div style="margin-top: 10px;">
+            <label for="checkNote">비고 (선택)</label>
+            <input id="checkNote" type="text" placeholder="메모를 적어도 되고 안 적어도 됩니다" />
+          </div>
+          <div style="margin-top: 10px;">
             <button id="addCheckBtn" class="btn" type="button">시간별 체크 추가</button>
           </div>
-          <p id="checksAvg" class="muted" style="margin-top: 10px;">평균 컨디션: -</p>
-          <ul id="checksList" class="history-list" style="margin-top: 8px;"></ul>
-          <div style="margin-top: 14px;">
-            <button class="btn save-day-btn" type="button">그날 기록 저장</button>
+          <div id="checksCollapsible">
+            <p id="checksAvg" class="muted" style="margin-top: 10px;">평균 컨디션: -</p>
+            <ul id="checksList" class="history-list" style="margin-top: 8px;"></ul>
           </div>
+        </div>
+
+        <div class="card">
+          <h2 class="title">스케줄 부하 입력</h2>
+          <div style="margin-top: 10px;">
+            <label for="scheduleRange">시간 (예: 12-13)</label>
+            <input id="scheduleRange" type="text" placeholder="12-13" />
+          </div>
+          <div style="margin-top: 10px;">
+            <label for="scheduleCategory">카테고리</label>
+            <select id="scheduleCategory">
+              <option value="class">수업</option>
+              <option value="study">공부</option>
+              <option value="assignment">과제</option>
+              <option value="exercise">운동</option>
+              <option value="parttime">알바</option>
+              <option value="meeting">회의/모임</option>
+              <option value="commute">이동</option>
+              <option value="rest">휴식</option>
+            </select>
+          </div>
+          <div style="margin-top: 10px;">
+            <label>부하 정도 선택 (낮음 -> 높음)</label>
+            <div id="scheduleLoadPicker" class="condition-picker">
+              <button type="button" class="condition-btn" data-load="1">1</button>
+              <button type="button" class="condition-btn" data-load="2">2</button>
+              <button type="button" class="condition-btn" data-load="3">3</button>
+              <button type="button" class="condition-btn" data-load="4">4</button>
+              <button type="button" class="condition-btn" data-load="5">5</button>
+            </div>
+          </div>
+          <div style="margin-top: 10px;">
+            <label for="scheduleText">스케줄 내용 (선택)</label>
+            <input id="scheduleText" type="text" placeholder="비워도 저장됩니다" />
+          </div>
+          <div style="margin-top: 10px;">
+            <button id="addScheduleBtn" class="btn" type="button">스케줄 추가</button>
+          </div>
+          <p id="scheduleLoadSummary" class="muted" style="margin-top: 10px;">오늘 스케줄 부하: -</p>
+          <ul id="scheduleList" class="history-list" style="margin-top: 8px;"></ul>
         </div>
 
         <div class="card">
           <div class="history-head">
             <h2 class="title" style="margin:0;">최근 기록</h2>
-            <button id="historyToggleBtn" class="toggle-btn" type="button"><span class="toggle-icon">&lt;</span><span id="toggleLabel">접기</span></button>
+            <button id="historyToggleBtn" class="toggle-btn" type="button" aria-label="최근기록 접기/펼치기"><span class="toggle-icon">&lt;</span></button>
           </div>
           <ul id="historyList" class="history-list"></ul>
         </div>
       </section>
 
       <section id="tab3" class="tab-panel">
+        <div class="card">
+          <h2 class="title">피로도 원인 분석</h2>
+          <p id="fatigueReason" class="muted">기록이 쌓이면 수면/컨디션/스케줄 부하를 합쳐 피로 이유를 알려드려요.</p>
+        </div>
         <div class="card">
           <h2 class="title">월별 분석</h2>
           <p class="muted">원 색은 컨디션, 원 안 숫자는 수면시간(시간)입니다.</p>
@@ -582,6 +643,7 @@
     const LEGACY_STORAGE_KEY = "sleepConditionRecords_v1";
     const GOAL_KEY = "sleepGoalHours_v1";
     let selectedCondition = 3;
+    let selectedScheduleLoad = 3;
     let records = loadRecords();
 
     const els = {
@@ -597,19 +659,30 @@
       avgCondition: document.getElementById("avgCondition"),
       recordTime: document.getElementById("recordTime"),
       recordDate: document.getElementById("recordDate"),
+      sleepToggleBtn: document.getElementById("sleepToggleBtn"),
+      sleepCollapsible: document.getElementById("sleepCollapsible"),
       sleepRange: document.getElementById("sleepRange"),
       sleepHoursAuto: document.getElementById("sleepHoursAuto"),
       todayWakeCount: document.getElementById("todayWakeCount"),
       conditionPicker: document.getElementById("conditionPicker"),
+      checkNote: document.getElementById("checkNote"),
       addCheckBtn: document.getElementById("addCheckBtn"),
+      checksToggleBtn: document.getElementById("checksToggleBtn"),
+      checksCollapsible: document.getElementById("checksCollapsible"),
       checksAvg: document.getElementById("checksAvg"),
       checksList: document.getElementById("checksList"),
-      saveBtns: document.querySelectorAll(".save-day-btn"),
-      toggleLabel: document.getElementById("toggleLabel"),
+      scheduleRange: document.getElementById("scheduleRange"),
+      scheduleCategory: document.getElementById("scheduleCategory"),
+      scheduleLoadPicker: document.getElementById("scheduleLoadPicker"),
+      scheduleText: document.getElementById("scheduleText"),
+      addScheduleBtn: document.getElementById("addScheduleBtn"),
+      scheduleLoadSummary: document.getElementById("scheduleLoadSummary"),
+      scheduleList: document.getElementById("scheduleList"),
       historyToggleBtn: document.getElementById("historyToggleBtn"),
       historyList: document.getElementById("historyList"),
       monthGrid: document.getElementById("monthGrid"),
-      weekChart: document.getElementById("weekChart")
+      weekChart: document.getElementById("weekChart"),
+      fatigueReason: document.getElementById("fatigueReason")
     };
 
     init();
@@ -619,9 +692,13 @@
       bindConditionPicker();
       bindGoalInput();
       bindSleepAutoCalc();
+      bindDailyAutoSave();
+      bindSleepToggle();
       bindCheckAdd();
+      bindScheduleAdd();
+      bindScheduleLoadPicker();
       bindHistoryToggle();
-      bindSave();
+      bindChecksToggle();
       initDefaults();
       renderAll();
       setInterval(updateRecordTime, 1000 * 30);
@@ -670,56 +747,122 @@
       els.addCheckBtn.addEventListener("click", () => {
         const date = els.recordDate.value;
         const time = currentTimeHHMM();
+        const note = els.checkNote.value.trim();
         if (!date) return alert("기록 날짜를 선택해주세요.");
 
         const record = findOrCreateRecordByDate(date);
-        record.checks.push({ time, condition: selectedCondition });
+        record.checks.push({ id: "c_" + Date.now() + "_" + Math.floor(Math.random() * 100000), time, condition: selectedCondition, note });
         record.checks.sort((a, b) => a.time.localeCompare(b.time));
         record.condition = average(record.checks.map(c => c.condition));
         saveRecords();
         renderChecksForDate(date);
         renderAll();
+        els.checkNote.value = "";
       });
 
     }
 
-    function bindSave() {
-      const saveHandler = () => {
+    function bindScheduleAdd() {
+      els.addScheduleBtn.addEventListener("click", () => {
         const date = els.recordDate.value;
-        const goalHours = Number(els.goalHoursInput.value || localStorage.getItem(GOAL_KEY));
-        const sleepRange = els.sleepRange.value.trim();
-        const todayWakeCount = Number(els.todayWakeCount.value);
-        const sleepHours = calcSleepHoursFromRange(sleepRange);
-        if (!date) return alert("기록 날짜를 선택해주세요.");
-        if (!Number.isFinite(goalHours) || goalHours <= 0) return alert("목표 수면시간을 입력해주세요.");
-        if (!sleepRange) return alert("수면시간을 12-13 형식으로 입력해주세요.");
-        if (!Number.isFinite(sleepHours) || sleepHours <= 0) return alert("수면시간 계산이 올바르지 않습니다.");
-        if (!Number.isFinite(todayWakeCount) || todayWakeCount < 0) return alert("기상 횟수를 입력해주세요.");
+        const range = els.scheduleRange.value.trim();
+        const category = els.scheduleCategory.value;
+        const text = els.scheduleText.value.trim();
+        if (!date) return alert("기록 날짜가 없습니다.");
+        if (!range) return alert("시간을 12-13 형식으로 입력해주세요.");
+        const hours = calcSleepHoursFromRange(range);
+        if (!Number.isFinite(hours) || hours <= 0) return alert("시간 범위를 확인해주세요.");
+        const [startRaw, endRaw] = range.split("-").map(v => v.trim());
 
-        localStorage.setItem(GOAL_KEY, String(goalHours));
         const record = findOrCreateRecordByDate(date);
-        record.goalHours = goalHours;
-        record.sleepRange = sleepRange;
-        record.sleepHours = sleepHours;
-        record.wakeCount = todayWakeCount;
-        record.recordedAt = new Date().toISOString();
-        if (record.checks.length) record.condition = average(record.checks.map(c => c.condition));
-        upsertRecordByDate(record);
+        record.schedules.push({
+          id: "s_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
+          start: startRaw || "",
+          end: endRaw || "",
+          range,
+          category,
+          hours,
+          text,
+          load: selectedScheduleLoad
+        });
+        record.schedules.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
         saveRecords();
+        renderSchedulesForDate(date);
         renderAll();
-        alert("그날 기록이 저장되었습니다.");
-      };
-      els.saveBtns.forEach(btn => btn.addEventListener("click", saveHandler));
+        els.scheduleText.value = "";
+      });
+    }
+
+    function bindScheduleLoadPicker() {
+      const buttons = els.scheduleLoadPicker.querySelectorAll(".condition-btn");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedScheduleLoad = Number(btn.dataset.load);
+          buttons.forEach(b => b.classList.toggle("selected", b === btn));
+        });
+      });
+      buttons[2].classList.add("selected");
+    }
+
+    function bindDailyAutoSave() {
+      const onChange = () => saveTodayRecord();
+      els.sleepRange.addEventListener("change", onChange);
+      els.todayWakeCount.addEventListener("change", onChange);
+      els.goalHoursInput.addEventListener("change", onChange);
+    }
+
+    function saveTodayRecord() {
+      const date = els.recordDate.value;
+      const goalHours = Number(els.goalHoursInput.value || localStorage.getItem(GOAL_KEY) || 8);
+      const sleepRange = els.sleepRange.value.trim();
+      const todayWakeCount = Number(els.todayWakeCount.value || 0);
+      const sleepHours = calcSleepHoursFromRange(sleepRange);
+      if (!date) return;
+      if (!Number.isFinite(goalHours) || goalHours <= 0) return;
+      if (!sleepRange || !Number.isFinite(sleepHours) || sleepHours <= 0) return;
+      if (!Number.isFinite(todayWakeCount) || todayWakeCount < 0) return;
+
+      localStorage.setItem(GOAL_KEY, String(goalHours));
+      const record = findOrCreateRecordByDate(date);
+      record.goalHours = goalHours;
+      record.sleepRange = sleepRange;
+      record.sleepHours = sleepHours;
+      record.wakeCount = todayWakeCount;
+      record.recordedAt = new Date().toISOString();
+      if (record.checks.length) record.condition = average(record.checks.map(c => c.condition));
+      upsertRecordByDate(record);
+      saveRecords();
+      renderChecksForDate(date);
+      renderAll();
     }
 
     function initDefaults() {
       const now = new Date();
       const nowDate = now.toISOString().slice(0, 10);
       els.recordDate.value = nowDate;
+      els.scheduleRange.value = "09-10";
       updateRecordTime();
       const savedGoal = localStorage.getItem(GOAL_KEY);
       if (savedGoal) els.goalHoursInput.value = savedGoal;
+      hydrateTodayForm(nowDate);
       renderChecksForDate(nowDate);
+      renderSchedulesForDate(nowDate);
+    }
+
+    function hydrateTodayForm(date) {
+      const record = records.find(r => r.date === date);
+      if (!record) return;
+      if (Number.isFinite(Number(record.goalHours)) && Number(record.goalHours) > 0) {
+        els.goalHoursInput.value = String(record.goalHours);
+      }
+      if (record.sleepRange) {
+        els.sleepRange.value = record.sleepRange;
+        const h = calcSleepHoursFromRange(record.sleepRange);
+        els.sleepHoursAuto.value = Number.isFinite(h) ? trimHour(h) + "시간" : "";
+      }
+      if (Number.isFinite(Number(record.wakeCount))) {
+        els.todayWakeCount.value = String(record.wakeCount);
+      }
     }
 
     function bindHistoryToggle() {
@@ -728,7 +871,24 @@
         collapsed = !collapsed;
         els.historyList.style.display = collapsed ? "none" : "";
         els.historyToggleBtn.classList.toggle("collapsed", collapsed);
-        els.toggleLabel.textContent = collapsed ? "펼치기" : "접기";
+      });
+    }
+
+    function bindSleepToggle() {
+      let collapsed = false;
+      els.sleepToggleBtn.addEventListener("click", () => {
+        collapsed = !collapsed;
+        els.sleepCollapsible.style.display = collapsed ? "none" : "";
+        els.sleepToggleBtn.classList.toggle("collapsed", collapsed);
+      });
+    }
+
+    function bindChecksToggle() {
+      let collapsed = false;
+      els.checksToggleBtn.addEventListener("click", () => {
+        collapsed = !collapsed;
+        els.checksCollapsible.style.display = collapsed ? "none" : "";
+        els.checksToggleBtn.classList.toggle("collapsed", collapsed);
       });
     }
 
@@ -746,6 +906,7 @@
       renderGoal();
       renderCharacterState();
       renderHistory();
+      renderFatigueReason();
       renderMonthGrid();
       drawWeeklyChart();
     }
@@ -815,6 +976,7 @@
 
     function renderChecksForDate(date) {
       const record = records.find(r => r.date === date);
+      if (record) ensureCheckIds(record);
       const checks = record ? record.checks : [];
       els.checksList.innerHTML = "";
       if (!checks.length) {
@@ -825,22 +987,47 @@
       checks.forEach(c => {
         const li = document.createElement("li");
         li.className = "history-item";
-        li.innerHTML = "<div><strong>" + c.time + "</strong> 컨디션 체크</div>" +
+        li.innerHTML = "<div><strong>" + c.time + "</strong> 컨디션 체크" +
+          (c.note ? "<br><span style='color:#64748b;'>" + escapeHtml(c.note) + "</span>" : "") +
+          "</div>" +
           "<div><span class='dot' style='background:" + colorByCondition(c.condition) + ";'></span>컨디션 " + trimHour(c.condition) +
-          " <button class='check-delete' data-time='" + c.time + "' type='button'>x</button></div>";
+          " <button class='check-delete' data-id='" + c.id + "' type='button'>x</button></div>";
         els.checksList.appendChild(li);
       });
       els.checksAvg.textContent = "평균 컨디션: " + trimHour(average(checks.map(c => c.condition)));
       bindDeleteCheck(date);
     }
 
+    function renderSchedulesForDate(date) {
+      const record = records.find(r => r.date === date);
+      const schedules = record && Array.isArray(record.schedules) ? record.schedules : [];
+      els.scheduleList.innerHTML = "";
+      if (!schedules.length) {
+        els.scheduleList.innerHTML = "<li class='history-item'>스케줄 입력이 없습니다.</li>";
+        els.scheduleLoadSummary.textContent = "오늘 스케줄 부하: -";
+        return;
+      }
+
+      schedules.forEach(s => {
+        const li = document.createElement("li");
+        li.className = "schedule-item";
+        const start = s.start || s.time || "--:--";
+        const end = s.end || "--:--";
+        const categoryLabel = scheduleCategoryLabel(s.category || "study");
+        li.innerHTML = "<div><strong>" + start + " - " + end + "</strong> [" + categoryLabel + "] " + escapeHtml(s.text || "") + "</div><div>부하 " + trimHour(s.load) + "</div>";
+        els.scheduleList.appendChild(li);
+      });
+      const avgLoad = average(schedules.map(s => s.load));
+      els.scheduleLoadSummary.textContent = "오늘 스케줄 부하: 평균 " + trimHour(avgLoad) + " / 5 (" + schedules.length + "개)";
+    }
+
     function bindDeleteCheck(date) {
       const buttons = els.checksList.querySelectorAll(".check-delete");
       buttons.forEach(btn => {
         btn.addEventListener("click", () => {
-          const t = btn.dataset.time;
+          const checkId = btn.dataset.id;
           const record = findOrCreateRecordByDate(date);
-          record.checks = record.checks.filter(c => c.time !== t);
+          record.checks = record.checks.filter(c => c.id !== checkId);
           record.condition = record.checks.length ? average(record.checks.map(c => c.condition)) : 3;
           saveRecords();
           renderChecksForDate(date);
@@ -860,13 +1047,36 @@
         return;
       }
       sorted.forEach(r => {
+        const scheduleAvg = Array.isArray(r.schedules) && r.schedules.length ? average(r.schedules.map(s => s.load)) : NaN;
         const li = document.createElement("li");
         li.className = "history-item";
         li.innerHTML =
-          "<div><strong>" + r.date + "</strong><br>목표 " + trimHour(r.goalHours || localStorage.getItem(GOAL_KEY)) + "h / 수면 " + trimHour(r.sleepHours) + "h / 평균 기상 " + trimHour(r.wakeCount) + "회</div>" +
+          "<div><strong>" + r.date + "</strong><br>목표 " + trimHour(r.goalHours || localStorage.getItem(GOAL_KEY)) + "h / 수면 " + trimHour(r.sleepHours) + "h / 평균 기상 " + trimHour(r.wakeCount) + "회 / 부하 " + (Number.isFinite(scheduleAvg) ? trimHour(scheduleAvg) : "-") + "</div>" +
           "<div><span class='dot' style='background:" + colorByCondition(r.condition) + ";'></span>" + conditionText(r.condition) + " (" + trimHour(r.condition) + ")</div>";
         els.historyList.appendChild(li);
       });
+    }
+
+    function renderFatigueReason() {
+      const today = new Date().toISOString().slice(0, 10);
+      const record = records.find(r => r.date === today) || [...records].sort((a, b) => b.date.localeCompare(a.date))[0];
+      if (!record) {
+        els.fatigueReason.textContent = "기록이 쌓이면 수면/컨디션/스케줄 부하를 합쳐 피로 이유를 알려드려요.";
+        return;
+      }
+      const sleep = Number(record.sleepHours) || 0;
+      const goal = Number(record.goalHours || localStorage.getItem(GOAL_KEY)) || 8;
+      const cond = Number(record.condition) || 3;
+      const loadAvg = Array.isArray(record.schedules) && record.schedules.length
+        ? average(record.schedules.map(s => s.load))
+        : 0;
+      const reasons = [];
+      if (sleep < goal - 1) reasons.push("목표보다 수면이 부족합니다");
+      if (loadAvg >= 4) reasons.push("스케줄 강도가 높아 피로 누적 가능성이 큽니다");
+      if (loadAvg >= 3 && cond <= 2.5) reasons.push("높은 부하와 낮은 컨디션이 함께 나타납니다");
+      if (!reasons.length && cond >= 3.6) reasons.push("수면과 일정 밸런스가 좋아 비교적 안정적입니다");
+      if (!reasons.length) reasons.push("수면과 스케줄 부하가 복합적으로 영향을 줍니다");
+      els.fatigueReason.textContent = "최근 분석: " + reasons.join(". ") + ".";
     }
 
     function renderMonthGrid() {
@@ -991,6 +1201,7 @@
           sleepRange: "",
           sleepHours: 0,
           checks: [],
+          schedules: [],
           wakeCount: 0,
           condition: 3,
           recordedAt: new Date().toISOString()
@@ -998,7 +1209,19 @@
         records.push(rec);
       }
       if (!Array.isArray(rec.checks)) rec.checks = [];
+      if (!Array.isArray(rec.schedules)) rec.schedules = [];
+      ensureCheckIds(rec);
       return rec;
+    }
+
+    function ensureCheckIds(record) {
+      let changed = false;
+      record.checks = record.checks.map((c, idx) => {
+        if (c && c.id) return c;
+        changed = true;
+        return { ...c, id: "c_" + Date.now() + "_" + idx + "_" + Math.floor(Math.random() * 100000) };
+      });
+      if (changed) saveRecords();
     }
 
     function upsertRecordByDate(record) {
@@ -1025,6 +1248,7 @@
           sleepRange: "",
           sleepHours: Number(r.sleepHours) || 0,
           checks: [],
+          schedules: [],
           wakeCount: Number(r.wakeCount) || 0,
           condition: Number(r.condition) || 3,
           recordedAt: r.recordedAt || new Date().toISOString()
@@ -1077,6 +1301,29 @@
       const hh = String(now.getHours()).padStart(2, "0");
       const mm = String(now.getMinutes()).padStart(2, "0");
       return hh + ":" + mm;
+    }
+
+    function scheduleCategoryLabel(category) {
+      const labels = {
+        class: "수업",
+        study: "공부",
+        assignment: "과제",
+        exercise: "운동",
+        parttime: "알바",
+        meeting: "회의/모임",
+        commute: "이동",
+        rest: "휴식"
+      };
+      return labels[category] || "기타";
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
     function getTodayOrLatestSleep() {

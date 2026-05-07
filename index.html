@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>수면 & 컨디션 기록</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #3b82f6;
+      --pink: #ff2d72;
+      --line: #e5e7eb;
+      --good: #22c55e;
+      --mid: #f59e0b;
+      --bad: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #edf2fb 0%, #f7f9fd 100%);
+      color: var(--text);
+    }
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+    }
+    .topbar {
+      padding: 20px 20px 8px;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .content {
+      padding: 0 16px 84px;
+      flex: 1;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .title {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .muted {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .row > * { flex: 1; }
+
+    label {
+      font-size: 13px;
+      color: #374151;
+      margin-bottom: 6px;
+      display: block;
+    }
+    input, select, button {
+      font: inherit;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 11px;
+      background: #fff;
+      color: #111827;
+    }
+    .btn {
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 12px;
+      padding: 11px 14px;
+      width: 100%;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn:active { transform: translateY(1px); }
+
+    .condition-picker {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .condition-btn {
+      border: 2px solid transparent;
+      height: 42px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .condition-btn[data-score="5"] { background: #16a34a; }
+    .condition-btn[data-score="4"] { background: #65a30d; }
+    .condition-btn[data-score="3"] { background: #f59e0b; }
+    .condition-btn[data-score="2"] { background: #f97316; }
+    .condition-btn[data-score="1"] { background: #dc2626; }
+    .condition-btn.selected {
+      border-color: #111827;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.16);
+    }
+
+    .character-wrap {
+      text-align: center;
+      padding-top: 6px;
+    }
+    .progress-ring {
+      --progress: 0;
+      width: 230px;
+      height: 230px;
+      margin: 10px auto 0;
+      border-radius: 50%;
+      background:
+        conic-gradient(var(--ring-color, #22c55e) calc(var(--progress) * 1%), #e2e8f0 0);
+      display: grid;
+      place-items: center;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+    .progress-ring::before {
+      content: "";
+      position: absolute;
+      inset: 17px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px #e2e8f0;
+    }
+    .ring-inner {
+      position: relative;
+      z-index: 2;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: #f8fbff;
+      display: grid;
+      place-items: center;
+    }
+    .pose {
+      width: 130px;
+      height: 130px;
+      display: none;
+    }
+    .bear.l0 .pose-l0,
+    .bear.l1 .pose-l1,
+    .bear.l2 .pose-l2,
+    .bear.l3 .pose-l3,
+    .bear.l4 .pose-l4,
+    .bear.l5 .pose-l5,
+    .bear.l6 .pose-l6,
+    .bear.l7 .pose-l7,
+    .bear.l8 .pose-l8 { display: block; }
+    .fx { position:absolute; inset:0; pointer-events:none; z-index:3; }
+    .fx-item { position:absolute; font-size:20px; display:none; }
+    .bear.l0 .fx-thermo { display:block; right:60px; bottom:62px; font-size:18px; }
+    .bear.l1 .fx-swirl1, .bear.l1 .fx-swirl2 { display:block; color:#a855f7; }
+    .bear.l1 .fx-swirl1 { left:42px; top:36px; }
+    .bear.l1 .fx-swirl2 { right:42px; top:32px; }
+    .bear.l7 .fx-spark1, .bear.l7 .fx-spark2, .bear.l7 .fx-spark3 { display:block; color:#f59e0b; }
+    .bear.l7 .fx-spark1 { left:18px; top:24px; }
+    .bear.l7 .fx-spark2 { right:18px; top:22px; }
+    .bear.l7 .fx-spark3 { right:20px; bottom:16px; }
+    .bear.l8 .fx-heart1, .bear.l8 .fx-heart2, .bear.l8 .fx-heart3 { display:block; color:#ef4444; }
+    .bear.l8 .fx-heart1 { left:16px; top:24px; }
+    .bear.l8 .fx-heart2 { right:16px; top:20px; }
+    .bear.l8 .fx-heart3 { right:18px; bottom:16px; }
+
+    .goal-progress-text {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .state-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      background: #e5e7eb;
+    }
+    .state-badge.healthy { background: #dcfce7; color: #166534; }
+    .state-badge.normal { background: #e0f2fe; color: #075985; }
+    .state-badge.tired { background: #fef3c7; color: #92400e; }
+    .state-badge.sick { background: #fee2e2; color: #991b1b; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .stat {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .stat .k { color: var(--muted); font-size: 12px; }
+    .stat .v { margin-top: 4px; font-weight: 800; font-size: 18px; }
+
+    .record-time {
+      margin: 8px 0 0;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .history-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      max-height: 220px;
+      overflow: auto;
+      border-top: 1px solid #eef2f7;
+    }
+    .history-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .toggle-btn {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #334155;
+      border-radius: 10px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toggle-icon {
+      display: inline-block;
+      transform: rotate(90deg);
+      transition: transform 0.2s ease;
+      font-weight: 800;
+    }
+    .toggle-btn.collapsed .toggle-icon {
+      transform: rotate(0deg);
+    }
+    .check-delete {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 999px;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      color: #ef4444;
+      font-weight: 800;
+    }
+    .history-item {
+      padding: 11px 2px;
+      border-bottom: 1px solid #eef2f7;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .cell {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      min-height: 68px;
+      padding: 6px 4px;
+      text-align: center;
+      font-size: 11px;
+      color: #475569;
+    }
+    .cell .day {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .cond-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .empty-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin: 0 auto;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .legend {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 6px;
+      color: #475569;
+      font-size: 12px;
+    }
+    .legend .mark {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    canvas {
+      width: 100%;
+      border: 1px solid #dbeafe;
+      border-radius: 14px;
+      background: #fff;
+      margin-top: 8px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: min(430px, 100%);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid #e5e7eb;
+      align-items: end;
+    }
+    .tab-btn {
+      border: none;
+      border-radius: 14px;
+      background: transparent;
+      color: #64748b;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+    }
+    .tab-btn.active {
+      color: #0f172a;
+    }
+    .nav-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-block;
+    }
+    .tab-btn.center-tab {
+      margin-top: -22px;
+      position: relative;
+    }
+    .center-bear {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #3b82f6, #22d3ee);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.26);
+      border: 3px solid #ffffff;
+    }
+    .center-bear svg {
+      width: 34px;
+      height: 34px;
+    }
+    .center-label {
+      font-size: 11px;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">수면시간 기반 컨디션 앱</div>
+    <div class="content">
+      <section id="tab1" class="tab-panel active">
+        <div class="card">
+          <h2 class="title">목표 수면시간</h2>
+          <p class="muted" id="goalDisplay">아직 설정되지 않았어요.</p>
+          <div style="margin-top:10px;">
+            <label for="goalHoursInput">목표 수면시간 (시간)</label>
+            <input id="goalHoursInput" type="number" min="1" max="24" step="0.5" placeholder="8" />
+          </div>
+        </div>
+        <div class="card character-wrap">
+          <h2 class="title">오늘의 동물 캐릭터 상태</h2>
+          <div id="animalWrap" class="progress-ring bear normal">
+            <div class="ring-inner">
+              <svg class="pose pose-l0" viewBox="0 0 120 120"><g transform="translate(60 65) rotate(92) translate(-60 -65)"><circle cx="36" cy="32" r="10" fill="#b89472"></circle><circle cx="84" cy="32" r="10" fill="#b89472"></circle><rect x="26" y="30" width="68" height="66" rx="24" fill="#c2a084"></rect><ellipse cx="60" cy="56" rx="18" ry="14" fill="#e7d8c6"></ellipse><path d="M44 52 Q50 48 56 52" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M64 52 Q70 48 76 52" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M52 64 L68 64" stroke="#2f3b4a" stroke-width="2.2"></path><rect x="34" y="89" width="10" height="11" rx="4" fill="#b89472"></rect><rect x="76" y="89" width="10" height="11" rx="4" fill="#b89472"></rect></g></svg>
+              <svg class="pose pose-l1" viewBox="0 0 120 120"><g transform="translate(60 66) rotate(88) translate(-60 -66)"><circle cx="36" cy="34" r="10" fill="#bb956f"></circle><circle cx="84" cy="34" r="10" fill="#bb956f"></circle><rect x="28" y="34" width="64" height="62" rx="22" fill="#c7a27e"></rect><ellipse cx="60" cy="58" rx="18" ry="13" fill="#ecd9c0"></ellipse><path d="M44 55 Q50 52 56 55" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M64 55 Q70 52 76 55" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M53 66 L67 66" stroke="#2f3b4a" stroke-width="2.2"></path><rect x="36" y="89" width="9" height="10" rx="4" fill="#bb956f"></rect><rect x="75" y="89" width="9" height="10" rx="4" fill="#bb956f"></rect></g></svg>
+              <svg class="pose pose-l2" viewBox="0 0 120 120"><circle cx="36" cy="34" r="11" fill="#c89a6f"></circle><circle cx="84" cy="34" r="11" fill="#c89a6f"></circle><rect x="25" y="34" width="70" height="68" rx="26" fill="#cea77a"></rect><ellipse cx="60" cy="61" rx="20" ry="14" fill="#efdbbf"></ellipse><path d="M44 55 Q50 52 56 55" stroke="#1f2937" stroke-width="2.4" fill="none"></path><path d="M64 55 Q70 52 76 55" stroke="#1f2937" stroke-width="2.4" fill="none"></path><ellipse cx="48" cy="58" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="72" cy="58" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="60" cy="61" rx="4.2" ry="3" fill="#2f3b4a"></ellipse><path d="M50 70 Q60 64 70 70" stroke="#2f3b4a" stroke-width="2.3" fill="none"></path><rect x="35" y="95" width="12" height="12" rx="5" fill="#c89a6f"></rect><rect x="73" y="95" width="12" height="12" rx="5" fill="#c89a6f"></rect></svg>
+              <svg class="pose pose-l3" viewBox="0 0 120 120"><circle cx="36" cy="30" r="12" fill="#cea074"></circle><circle cx="84" cy="30" r="12" fill="#cea074"></circle><rect x="25" y="28" width="70" height="74" rx="28" fill="#d7ad7c"></rect><ellipse cx="60" cy="58" rx="20" ry="16" fill="#f3debf"></ellipse><circle cx="50" cy="53" r="3.2" fill="#1f2937"></circle><circle cx="70" cy="53" r="3.2" fill="#1f2937"></circle><ellipse cx="48" cy="57" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="72" cy="57" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="60" cy="60.5" rx="4.2" ry="3.2" fill="#2f3b4a"></ellipse><path d="M51 67 Q60 72 69 67" stroke="#2f3b4a" stroke-width="2.4" fill="none"></path><rect x="35" y="95" width="13" height="14" rx="5" fill="#cea074"></rect><rect x="72" y="95" width="13" height="14" rx="5" fill="#cea074"></rect></svg>
+              <svg class="pose pose-l4" viewBox="0 0 120 120"><circle cx="36" cy="30" r="12" fill="#d4a373"></circle><circle cx="84" cy="30" r="12" fill="#d4a373"></circle><rect x="25" y="28" width="70" height="74" rx="28" fill="#deb887"></rect><ellipse cx="60" cy="58" rx="20" ry="16" fill="#f6dfc5"></ellipse><circle cx="50" cy="53" r="3.2" fill="#1f2937"></circle><circle cx="70" cy="53" r="3.2" fill="#1f2937"></circle><ellipse cx="60" cy="60.5" rx="4.2" ry="3.2" fill="#2f3b4a"></ellipse><path d="M51 67 Q60 73 69 67" stroke="#2f3b4a" stroke-width="2.4" fill="none"></path><rect x="35" y="95" width="13" height="14" rx="5" fill="#d4a373"></rect><rect x="72" y="95" width="13" height="14" rx="5" fill="#d4a373"></rect></svg>
+              <svg class="pose pose-l5" viewBox="0 0 120 120"><circle cx="34" cy="28" r="12" fill="#d8a878"></circle><circle cx="86" cy="28" r="12" fill="#d8a878"></circle><rect x="22" y="24" width="76" height="80" rx="30" fill="#e2b982"></rect><ellipse cx="60" cy="55" rx="21" ry="16" fill="#f8e4cb"></ellipse><circle cx="48" cy="50" r="3.4" fill="#111827"></circle><circle cx="72" cy="50" r="3.4" fill="#111827"></circle><ellipse cx="60" cy="58" rx="4.5" ry="3.4" fill="#2f3b4a"></ellipse><path d="M49 64 Q60 74 71 64" stroke="#2f3b4a" stroke-width="2.8" fill="none"></path><rect x="33" y="98" width="14" height="15" rx="6" fill="#d8a878"></rect><rect x="73" y="98" width="14" height="15" rx="6" fill="#d8a878"></rect></svg>
+              <svg class="pose pose-l6" viewBox="0 0 120 120"><circle cx="33" cy="27" r="13" fill="#daab7a"></circle><circle cx="87" cy="27" r="13" fill="#daab7a"></circle><rect x="20" y="21" width="80" height="84" rx="31" fill="#e6be87"></rect><ellipse cx="60" cy="54" rx="22" ry="16" fill="#fae6ce"></ellipse><circle cx="47" cy="49" r="3.6" fill="#111827"></circle><circle cx="73" cy="49" r="3.6" fill="#111827"></circle><ellipse cx="60" cy="57" rx="4.6" ry="3.4" fill="#2f3b4a"></ellipse><path d="M48 63 Q60 76 72 63" stroke="#2f3b4a" stroke-width="2.8" fill="none"></path><rect x="32" y="99" width="15" height="15" rx="6" fill="#daab7a"></rect><rect x="73" y="99" width="15" height="15" rx="6" fill="#daab7a"></rect></svg>
+              <svg class="pose pose-l7" viewBox="0 0 120 120"><circle cx="33" cy="26" r="13" fill="#ddb07d"></circle><circle cx="87" cy="26" r="13" fill="#ddb07d"></circle><rect x="20" y="20" width="80" height="84" rx="31" fill="#ebc48d"></rect><ellipse cx="60" cy="54" rx="22" ry="16" fill="#fde9d2"></ellipse><circle cx="47" cy="49" r="3.7" fill="#111827"></circle><circle cx="73" cy="49" r="3.7" fill="#111827"></circle><ellipse cx="60" cy="57" rx="4.8" ry="3.5" fill="#2f3b4a"></ellipse><path d="M48 62 Q60 77 72 62" stroke="#2f3b4a" stroke-width="2.9" fill="none"></path><rect x="32" y="99" width="15" height="15" rx="6" fill="#ddb07d"></rect><rect x="73" y="99" width="15" height="15" rx="6" fill="#ddb07d"></rect></svg>
+              <svg class="pose pose-l8" viewBox="0 0 120 120"><circle cx="32" cy="25" r="14" fill="#e1b482"></circle><circle cx="88" cy="25" r="14" fill="#e1b482"></circle><rect x="18" y="18" width="84" height="88" rx="32" fill="#efc992"></rect><ellipse cx="60" cy="53" rx="23" ry="17" fill="#ffeed9"></ellipse><circle cx="46" cy="48" r="3.8" fill="#111827"></circle><circle cx="74" cy="48" r="3.8" fill="#111827"></circle><ellipse cx="60" cy="56.5" rx="5" ry="3.6" fill="#2f3b4a"></ellipse><path d="M47 61 Q60 79 73 61" stroke="#2f3b4a" stroke-width="3" fill="none"></path><rect x="31" y="100" width="16" height="16" rx="6" fill="#e1b482"></rect><rect x="73" y="100" width="16" height="16" rx="6" fill="#e1b482"></rect></svg>
+              <div class="fx">
+                <span class="fx-item fx-thermo">🌡️</span>
+                <span class="fx-item fx-swirl1">🌀</span><span class="fx-item fx-swirl2">🌀</span>
+                <span class="fx-item fx-spark1">✦</span><span class="fx-item fx-spark2">✦</span><span class="fx-item fx-spark3">✦</span>
+                <span class="fx-item fx-heart1">❤</span><span class="fx-item fx-heart2">❤</span><span class="fx-item fx-heart3">❤</span>
+              </div>
+            </div>
+          </div>
+          <p id="goalProgressText" class="goal-progress-text">목표 달성률: -</p>
+          <div id="stateBadge" class="state-badge normal">보통 컨디션</div>
+          <p id="stateDesc" class="muted" style="margin-top: 10px;">
+            기록이 쌓이면 수면량과 평균 컨디션 추세로 건강 상태가 바뀝니다.
+          </p>
+          <div class="stats">
+            <div class="stat"><div class="k">최근 7일 평균 수면</div><div class="v" id="avgSleep">-</div></div>
+            <div class="stat"><div class="k">최근 7일 평균 컨디션</div><div class="v" id="avgCondition">-</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab2" class="tab-panel">
+        <div class="card">
+          <h2 class="title">수면기록</h2>
+          <p class="record-time">기록 시각: <span id="recordTime"></span></p>
+          <div style="margin-top: 10px; display:none;">
+            <label for="recordDate">기록 날짜</label>
+            <input id="recordDate" type="date" disabled />
+          </div>
+          <div class="row" style="margin-top: 10px;">
+            <div>
+              <label for="sleepRange">수면시간 입력 (예: 12-13)</label>
+              <input id="sleepRange" type="text" placeholder="12-13" />
+            </div>
+          </div>
+          <div style="margin-top: 10px; display:none;">
+            <label for="sleepHoursAuto">자동 계산 수면시간</label>
+            <input id="sleepHoursAuto" type="text" readonly placeholder="자동 계산됨" />
+          </div>
+          <div style="margin-top: 10px;">
+            <label for="todayWakeCount">기상 횟수</label>
+            <input id="todayWakeCount" type="number" min="0" max="20" step="1" placeholder="1" />
+          </div>
+          <div style="margin-top: 14px;">
+            <button class="btn save-day-btn" type="button">그날 기록 저장</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="title">시간별 체크</h2>
+          <div style="margin-top: 10px;">
+            <label>체크 시점 컨디션 (나쁨 -> 좋음, 오른쪽이 초록)</label>
+            <div id="conditionPicker" class="condition-picker">
+              <button type="button" class="condition-btn" data-score="2">나쁨</button>
+              <button type="button" class="condition-btn" data-score="1">최악</button>
+              <button type="button" class="condition-btn" data-score="3">보통</button>
+              <button type="button" class="condition-btn" data-score="4">좋음</button>
+              <button type="button" class="condition-btn" data-score="5">최고</button>
+            </div>
+          </div>
+          <div style="margin-top: 10px;">
+            <button id="addCheckBtn" class="btn" type="button">시간별 체크 추가</button>
+          </div>
+          <p id="checksAvg" class="muted" style="margin-top: 10px;">평균 컨디션: -</p>
+          <ul id="checksList" class="history-list" style="margin-top: 8px;"></ul>
+          <div style="margin-top: 14px;">
+            <button class="btn save-day-btn" type="button">그날 기록 저장</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="history-head">
+            <h2 class="title" style="margin:0;">최근 기록</h2>
+            <button id="historyToggleBtn" class="toggle-btn" type="button"><span class="toggle-icon">&lt;</span><span id="toggleLabel">접기</span></button>
+          </div>
+          <ul id="historyList" class="history-list"></ul>
+        </div>
+      </section>
+
+      <section id="tab3" class="tab-panel">
+        <div class="card">
+          <h2 class="title">월별 분석</h2>
+          <p class="muted">원 색은 컨디션, 원 안 숫자는 수면시간(시간)입니다.</p>
+          <div class="legend">
+            <span><span class="mark" style="background:#16a34a;"></span>좋음</span>
+            <span><span class="mark" style="background:#f59e0b;"></span>보통</span>
+            <span><span class="mark" style="background:#dc2626;"></span>나쁨</span>
+          </div>
+          <div id="monthGrid" class="month-grid"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="title">주간 그래프</h2>
+          <p class="muted">핑크 막대: 수면시간 / 파란 선: 컨디션</p>
+          <canvas id="weekChart" width="390" height="250"></canvas>
+        </div>
+      </section>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="tab-btn" data-tab="tab2" aria-label="기록 탭">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M8 3h8v3H8V3zM6 6h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" fill="currentColor"></path>
+          <rect x="8" y="11" width="8" height="1.8" rx="0.9" fill="#ffffff"></rect>
+          <rect x="8" y="15" width="6" height="1.8" rx="0.9" fill="#ffffff"></rect>
+        </svg>
+        <span>기록</span>
+      </button>
+      <button class="tab-btn center-tab active" data-tab="tab1" aria-label="캐릭터 탭">
+        <span class="center-bear">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="7" cy="7" r="3.5" fill="#f8d8b5"></circle>
+            <circle cx="17" cy="7" r="3.5" fill="#f8d8b5"></circle>
+            <rect x="4.2" y="6.5" width="15.6" height="14.3" rx="6" fill="#f1c48a"></rect>
+            <circle cx="9.5" cy="12.3" r="1.1" fill="#334155"></circle>
+            <circle cx="14.5" cy="12.3" r="1.1" fill="#334155"></circle>
+            <ellipse cx="12" cy="14.6" rx="1.5" ry="1.1" fill="#334155"></ellipse>
+          </svg>
+        </span>
+        <span class="center-label">캐릭터</span>
+      </button>
+      <button class="tab-btn" data-tab="tab3" aria-label="분석 탭">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="10" width="4" height="10" rx="1" fill="currentColor"></rect>
+          <rect x="10" y="6" width="4" height="14" rx="1" fill="currentColor"></rect>
+          <rect x="16" y="13" width="4" height="7" rx="1" fill="currentColor"></rect>
+        </svg>
+        <span>분석</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "sleepConditionRecords_v2";
+    const LEGACY_STORAGE_KEY = "sleepConditionRecords_v1";
+    const GOAL_KEY = "sleepGoalHours_v1";
+    let selectedCondition = 3;
+    let records = loadRecords();
+
+    const els = {
+      tabs: document.querySelectorAll(".tab-panel"),
+      tabBtns: document.querySelectorAll(".tab-btn"),
+      goalDisplay: document.getElementById("goalDisplay"),
+      goalHoursInput: document.getElementById("goalHoursInput"),
+      animalWrap: document.getElementById("animalWrap"),
+      stateBadge: document.getElementById("stateBadge"),
+      stateDesc: document.getElementById("stateDesc"),
+      goalProgressText: document.getElementById("goalProgressText"),
+      avgSleep: document.getElementById("avgSleep"),
+      avgCondition: document.getElementById("avgCondition"),
+      recordTime: document.getElementById("recordTime"),
+      recordDate: document.getElementById("recordDate"),
+      sleepRange: document.getElementById("sleepRange"),
+      sleepHoursAuto: document.getElementById("sleepHoursAuto"),
+      todayWakeCount: document.getElementById("todayWakeCount"),
+      conditionPicker: document.getElementById("conditionPicker"),
+      addCheckBtn: document.getElementById("addCheckBtn"),
+      checksAvg: document.getElementById("checksAvg"),
+      checksList: document.getElementById("checksList"),
+      saveBtns: document.querySelectorAll(".save-day-btn"),
+      toggleLabel: document.getElementById("toggleLabel"),
+      historyToggleBtn: document.getElementById("historyToggleBtn"),
+      historyList: document.getElementById("historyList"),
+      monthGrid: document.getElementById("monthGrid"),
+      weekChart: document.getElementById("weekChart")
+    };
+
+    init();
+
+    function init() {
+      bindTabs();
+      bindConditionPicker();
+      bindGoalInput();
+      bindSleepAutoCalc();
+      bindCheckAdd();
+      bindHistoryToggle();
+      bindSave();
+      initDefaults();
+      renderAll();
+      setInterval(updateRecordTime, 1000 * 30);
+    }
+
+    function bindTabs() {
+      els.tabBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.tab;
+          els.tabs.forEach(tab => tab.classList.toggle("active", tab.id === target));
+          els.tabBtns.forEach(b => b.classList.toggle("active", b === btn));
+          if (target === "tab3") drawWeeklyChart();
+        });
+      });
+    }
+
+    function bindConditionPicker() {
+      const buttons = els.conditionPicker.querySelectorAll(".condition-btn");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          selectedCondition = Number(button.dataset.score);
+          buttons.forEach(b => b.classList.toggle("selected", b === button));
+        });
+      });
+      buttons[2].classList.add("selected");
+    }
+
+    function bindGoalInput() {
+      els.goalHoursInput.addEventListener("change", () => {
+        const goal = Number(els.goalHoursInput.value);
+        if (Number.isFinite(goal) && goal > 0) {
+          localStorage.setItem(GOAL_KEY, String(goal));
+          renderAll();
+        }
+      });
+    }
+
+    function bindSleepAutoCalc() {
+      els.sleepRange.addEventListener("input", () => {
+        const h = calcSleepHoursFromRange(els.sleepRange.value);
+        els.sleepHoursAuto.value = Number.isFinite(h) ? trimHour(h) + "시간" : "";
+      });
+    }
+
+    function bindCheckAdd() {
+      els.addCheckBtn.addEventListener("click", () => {
+        const date = els.recordDate.value;
+        const time = currentTimeHHMM();
+        if (!date) return alert("기록 날짜를 선택해주세요.");
+
+        const record = findOrCreateRecordByDate(date);
+        record.checks.push({ time, condition: selectedCondition });
+        record.checks.sort((a, b) => a.time.localeCompare(b.time));
+        record.condition = average(record.checks.map(c => c.condition));
+        saveRecords();
+        renderChecksForDate(date);
+        renderAll();
+      });
+
+    }
+
+    function bindSave() {
+      const saveHandler = () => {
+        const date = els.recordDate.value;
+        const goalHours = Number(els.goalHoursInput.value || localStorage.getItem(GOAL_KEY));
+        const sleepRange = els.sleepRange.value.trim();
+        const todayWakeCount = Number(els.todayWakeCount.value);
+        const sleepHours = calcSleepHoursFromRange(sleepRange);
+        if (!date) return alert("기록 날짜를 선택해주세요.");
+        if (!Number.isFinite(goalHours) || goalHours <= 0) return alert("목표 수면시간을 입력해주세요.");
+        if (!sleepRange) return alert("수면시간을 12-13 형식으로 입력해주세요.");
+        if (!Number.isFinite(sleepHours) || sleepHours <= 0) return alert("수면시간 계산이 올바르지 않습니다.");
+        if (!Number.isFinite(todayWakeCount) || todayWakeCount < 0) return alert("기상 횟수를 입력해주세요.");
+
+        localStorage.setItem(GOAL_KEY, String(goalHours));
+        const record = findOrCreateRecordByDate(date);
+        record.goalHours = goalHours;
+        record.sleepRange = sleepRange;
+        record.sleepHours = sleepHours;
+        record.wakeCount = todayWakeCount;
+        record.recordedAt = new Date().toISOString();
+        if (record.checks.length) record.condition = average(record.checks.map(c => c.condition));
+        upsertRecordByDate(record);
+        saveRecords();
+        renderAll();
+        alert("그날 기록이 저장되었습니다.");
+      };
+      els.saveBtns.forEach(btn => btn.addEventListener("click", saveHandler));
+    }
+
+    function initDefaults() {
+      const now = new Date();
+      const nowDate = now.toISOString().slice(0, 10);
+      els.recordDate.value = nowDate;
+      updateRecordTime();
+      const savedGoal = localStorage.getItem(GOAL_KEY);
+      if (savedGoal) els.goalHoursInput.value = savedGoal;
+      renderChecksForDate(nowDate);
+    }
+
+    function bindHistoryToggle() {
+      let collapsed = false;
+      els.historyToggleBtn.addEventListener("click", () => {
+        collapsed = !collapsed;
+        els.historyList.style.display = collapsed ? "none" : "";
+        els.historyToggleBtn.classList.toggle("collapsed", collapsed);
+        els.toggleLabel.textContent = collapsed ? "펼치기" : "접기";
+      });
+    }
+
+    function updateRecordTime() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      els.recordTime.textContent = y + "-" + m + "-" + d + " " + hh + ":" + mm;
+    }
+
+    function renderAll() {
+      renderGoal();
+      renderCharacterState();
+      renderHistory();
+      renderMonthGrid();
+      drawWeeklyChart();
+    }
+
+    function renderGoal() {
+      const goal = Number(localStorage.getItem(GOAL_KEY));
+      els.goalDisplay.textContent = Number.isFinite(goal) && goal > 0
+        ? "현재 목표 수면시간: " + trimHour(goal) + "시간"
+        : "아직 설정되지 않았어요.";
+    }
+
+    function renderCharacterState() {
+      const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+      const recent7 = sorted.slice(-7);
+      const prev7 = sorted.slice(-14, -7);
+      const avgSleepRecent = average(recent7.map(r => r.sleepHours));
+      const avgCondRecent = average(recent7.map(r => r.condition));
+      const avgSleepPrev = average(prev7.map(r => r.sleepHours));
+      const avgCondPrev = average(prev7.map(r => r.condition));
+      els.avgSleep.textContent = Number.isFinite(avgSleepRecent) ? avgSleepRecent.toFixed(1) + "시간" : "-";
+      els.avgCondition.textContent = Number.isFinite(avgCondRecent) ? avgCondRecent.toFixed(1) + " / 5" : "-";
+
+      const sleepDiff = safeDiff(avgSleepRecent, avgSleepPrev);
+      const condDiff = safeDiff(avgCondRecent, avgCondPrev);
+      const goalHours = Number(localStorage.getItem(GOAL_KEY));
+      const targetSleep = getTodayOrLatestSleep();
+      const progress = Number.isFinite(goalHours) && goalHours > 0 ? Math.max(0, Math.min(100, (targetSleep / goalHours) * 100)) : 0;
+      const score = Number.isFinite(avgCondRecent) ? avgCondRecent : 3;
+      const tier = getConditionTier(score);
+      const tierMap = {
+        l0: ["매우 아픔", "캐릭터가 납작 엎드리고 체온계를 물고 있어요."],
+        l1: ["어지러운 상태", "납작 엎드린 상태로 보라색 어지럼 표시가 보여요."],
+        l2: ["많이 피곤함", "살짝 엎드리고 다크서클이 생겼어요."],
+        l3: ["피곤한 상태", "서있지만 다크서클이 보여요."],
+        l4: ["보통 컨디션", "평범한 기본 상태예요."],
+        l5: ["조금 좋아짐", "몸집이 살짝 커졌어요."],
+        l6: ["좋은 상태", "몸집이 조금 더 커졌어요."],
+        l7: ["매우 좋음", "몸집이 커지고 반짝 파티클이 생겼어요."],
+        l8: ["최상 컨디션", "주위에 하트 파티클이 생겼어요."]
+      };
+      const label = tierMap[tier][0];
+      const desc = tierMap[tier][1];
+
+      const ringColor = score >= 4.0 ? "#22c55e" : score >= 2.6 ? "#3b82f6" : score >= 1.6 ? "#f59e0b" : "#ef4444";
+      els.animalWrap.className = "progress-ring bear " + tier;
+      els.animalWrap.style.setProperty("--progress", String(progress.toFixed(1)));
+      els.animalWrap.style.setProperty("--ring-color", ringColor);
+      els.goalProgressText.textContent = Number.isFinite(goalHours) && goalHours > 0
+        ? "목표 달성률: " + progress.toFixed(0) + "% (" + trimHour(targetSleep) + "h / 목표 " + trimHour(goalHours) + "h)"
+        : "목표 달성률: 목표 수면시간을 먼저 입력해 주세요.";
+      els.stateBadge.className = "state-badge normal";
+      els.stateBadge.textContent = label;
+      els.stateDesc.textContent = desc;
+    }
+
+    function getConditionTier(score) {
+      if (score <= 0.9) return "l0";
+      if (score <= 1.5) return "l1";
+      if (score <= 2.0) return "l2";
+      if (score <= 2.5) return "l3";
+      if (score <= 3.0) return "l4";
+      if (score <= 3.5) return "l5";
+      if (score <= 3.9) return "l6";
+      if (score <= 4.5) return "l7";
+      return "l8";
+    }
+
+    function renderChecksForDate(date) {
+      const record = records.find(r => r.date === date);
+      const checks = record ? record.checks : [];
+      els.checksList.innerHTML = "";
+      if (!checks.length) {
+        els.checksList.innerHTML = "<li class='history-item'>시간별 체크가 없습니다.</li>";
+        els.checksAvg.textContent = "평균 컨디션: -";
+        return;
+      }
+      checks.forEach(c => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.innerHTML = "<div><strong>" + c.time + "</strong> 컨디션 체크</div>" +
+          "<div><span class='dot' style='background:" + colorByCondition(c.condition) + ";'></span>컨디션 " + trimHour(c.condition) +
+          " <button class='check-delete' data-time='" + c.time + "' type='button'>x</button></div>";
+        els.checksList.appendChild(li);
+      });
+      els.checksAvg.textContent = "평균 컨디션: " + trimHour(average(checks.map(c => c.condition)));
+      bindDeleteCheck(date);
+    }
+
+    function bindDeleteCheck(date) {
+      const buttons = els.checksList.querySelectorAll(".check-delete");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const t = btn.dataset.time;
+          const record = findOrCreateRecordByDate(date);
+          record.checks = record.checks.filter(c => c.time !== t);
+          record.condition = record.checks.length ? average(record.checks.map(c => c.condition)) : 3;
+          saveRecords();
+          renderChecksForDate(date);
+          renderAll();
+        });
+      });
+    }
+
+    function renderHistory() {
+      const sorted = [...records].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 20);
+      els.historyList.innerHTML = "";
+      if (!sorted.length) {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.textContent = "아직 기록이 없습니다.";
+        els.historyList.appendChild(li);
+        return;
+      }
+      sorted.forEach(r => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.innerHTML =
+          "<div><strong>" + r.date + "</strong><br>목표 " + trimHour(r.goalHours || localStorage.getItem(GOAL_KEY)) + "h / 수면 " + trimHour(r.sleepHours) + "h / 평균 기상 " + trimHour(r.wakeCount) + "회</div>" +
+          "<div><span class='dot' style='background:" + colorByCondition(r.condition) + ";'></span>" + conditionText(r.condition) + " (" + trimHour(r.condition) + ")</div>";
+        els.historyList.appendChild(li);
+      });
+    }
+
+    function renderMonthGrid() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const days = new Date(year, month + 1, 0).getDate();
+      els.monthGrid.innerHTML = "";
+      for (let day = 1; day <= days; day++) {
+        const date = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+        const record = records.find(r => r.date === date);
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        const dayEl = document.createElement("span");
+        dayEl.className = "day";
+        dayEl.textContent = day;
+        cell.appendChild(dayEl);
+        if (record) {
+          const circle = document.createElement("div");
+          circle.className = "cond-circle";
+          circle.style.background = colorByCondition(record.condition);
+          circle.textContent = trimHour(record.sleepHours);
+          circle.title = record.date + " / 컨디션 " + conditionText(record.condition);
+          cell.appendChild(circle);
+        } else {
+          const empty = document.createElement("div");
+          empty.className = "empty-circle";
+          cell.appendChild(empty);
+        }
+        els.monthGrid.appendChild(cell);
+      }
+    }
+
+    function drawWeeklyChart() {
+      const canvas = els.weekChart;
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width;
+      const height = canvas.height;
+      ctx.clearRect(0, 0, width, height);
+      const pad = { top: 24, right: 30, bottom: 30, left: 34 };
+      const chartW = width - pad.left - pad.right;
+      const chartH = height - pad.top - pad.bottom;
+      const recent = getRecent7Filled();
+      const maxSleep = 10;
+      const minSleep = 0;
+      const maxCond = 5;
+      const minCond = 1;
+
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = pad.top + (chartH / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(width - pad.right, y);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "11px sans-serif";
+      for (let i = 0; i <= 5; i++) {
+        const value = maxSleep - (maxSleep / 5) * i;
+        const y = pad.top + (chartH / 5) * i + 3;
+        ctx.fillText(String(Math.round(value)), 8, y);
+      }
+
+      const barW = chartW / recent.length * 0.58;
+      const stepX = chartW / recent.length;
+      const points = [];
+      recent.forEach((item, i) => {
+        const xCenter = pad.left + stepX * i + stepX / 2;
+        const barH = ((item.sleepHours - minSleep) / (maxSleep - minSleep)) * chartH;
+        const x = xCenter - barW / 2;
+        const y = pad.top + chartH - barH;
+        ctx.fillStyle = "#ff2d72";
+        roundRect(ctx, x, y, barW, barH, 5);
+        ctx.fill();
+        const lineY = pad.top + chartH - ((item.condition - minCond) / (maxCond - minCond)) * chartH;
+        points.push({ x: xCenter, y: lineY });
+        ctx.fillStyle = "#475569";
+        ctx.fillText(item.label, xCenter - 7, height - 10);
+      });
+
+      ctx.strokeStyle = "#3b82f6";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      points.forEach((p, idx) => idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.stroke();
+
+      points.forEach(p => {
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#3b82f6";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    function getRecent7Filled() {
+      const labels = ["일", "월", "화", "수", "목", "금", "토"];
+      const map = new Map(records.map(r => [r.date, r]));
+      const arr = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const date = d.toISOString().slice(0, 10);
+        const rec = map.get(date);
+        arr.push({ label: labels[d.getDay()], sleepHours: rec ? rec.sleepHours : 0, condition: rec ? rec.condition : 3 });
+      }
+      return arr;
+    }
+
+    function findOrCreateRecordByDate(date) {
+      let rec = records.find(r => r.date === date);
+      if (!rec) {
+        rec = {
+          id: Date.now(),
+          date,
+          goalHours: Number(localStorage.getItem(GOAL_KEY)) || 0,
+          sleepRange: "",
+          sleepHours: 0,
+          checks: [],
+          wakeCount: 0,
+          condition: 3,
+          recordedAt: new Date().toISOString()
+        };
+        records.push(rec);
+      }
+      if (!Array.isArray(rec.checks)) rec.checks = [];
+      return rec;
+    }
+
+    function upsertRecordByDate(record) {
+      const idx = records.findIndex(r => r.date === record.date);
+      if (idx >= 0) {
+        record.id = records[idx].id;
+        records[idx] = record;
+      } else {
+        records.push(record);
+      }
+    }
+
+    function loadRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+        const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (!legacy) return [];
+        const old = JSON.parse(legacy);
+        return old.map(r => ({
+          id: r.id || Date.now(),
+          date: r.date,
+          goalHours: 0,
+          sleepRange: "",
+          sleepHours: Number(r.sleepHours) || 0,
+          checks: [],
+          wakeCount: Number(r.wakeCount) || 0,
+          condition: Number(r.condition) || 3,
+          recordedAt: r.recordedAt || new Date().toISOString()
+        }));
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function average(nums) {
+      if (!nums.length) return NaN;
+      return nums.reduce((a, b) => a + b, 0) / nums.length;
+    }
+
+    function safeDiff(a, b) {
+      if (!Number.isFinite(a) || !Number.isFinite(b)) return 0;
+      return a - b;
+    }
+
+    function calcSleepHoursFromRange(rangeText) {
+      if (!rangeText || !rangeText.includes("-")) return NaN;
+      const [startRaw, endRaw] = rangeText.split("-").map(v => v.trim());
+      const start = parseFlexibleHour(startRaw);
+      const end = parseFlexibleHour(endRaw);
+      if (!Number.isFinite(start) || !Number.isFinite(end)) return NaN;
+      let diff = end - start;
+      if (diff <= 0) diff += 24;
+      return diff;
+    }
+
+    function parseFlexibleHour(text) {
+      if (text.includes(":")) {
+        const [h, m] = text.split(":").map(Number);
+        if (![h, m].every(Number.isFinite)) return NaN;
+        if (h < 0 || h > 23 || m < 0 || m > 59) return NaN;
+        return h + m / 60;
+      }
+      const n = Number(text);
+      if (!Number.isFinite(n)) return NaN;
+      if (n < 0 || n >= 24) return NaN;
+      return n;
+    }
+
+    function currentTimeHHMM() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      return hh + ":" + mm;
+    }
+
+    function getTodayOrLatestSleep() {
+      const today = new Date().toISOString().slice(0, 10);
+      const todayRecord = records.find(r => r.date === today);
+      if (todayRecord) return Number(todayRecord.sleepHours) || 0;
+      const latest = [...records].sort((a, b) => b.date.localeCompare(a.date))[0];
+      return latest ? Number(latest.sleepHours) || 0 : 0;
+    }
+
+    function conditionText(score) {
+      if (score >= 4.5) return "최고";
+      if (score >= 3.5) return "좋음";
+      if (score >= 2.5) return "보통";
+      if (score >= 1.5) return "나쁨";
+      return "최악";
+    }
+
+    function colorByCondition(score) {
+      if (score >= 4.5) return "#16a34a";
+      if (score >= 3.5) return "#65a30d";
+      if (score >= 2.5) return "#f59e0b";
+      if (score >= 1.5) return "#f97316";
+      return "#dc2626";
+    }
+
+    function trimHour(v) {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return "-";
+      return Number.isInteger(n) ? String(n) : n.toFixed(1);
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      const rr = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + rr, y);
+      ctx.arcTo(x + w, y, x + w, y + h, rr);
+      ctx.arcTo(x + w, y + h, x, y + h, rr);
+      ctx.arcTo(x, y + h, x, y, rr);
+      ctx.arcTo(x, y, x + w, y, rr);
+      ctx.closePath();
+    }
+  </script>
+</body>
+</html>

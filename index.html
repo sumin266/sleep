@@ -268,6 +268,65 @@
     .toggle-btn.collapsed .toggle-icon {
       transform: rotate(0deg);
     }
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .nav-row .nav-label {
+      font-size: 17px;
+      font-weight: 700;
+      color: #334155;
+      flex: 1;
+      text-align: center;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    .nav-row .toggle-btn {
+      flex: 0 0 auto;
+      min-width: 40px;
+      justify-content: center;
+    }
+    /* 월/주 네비 — 접기용 .toggle-icon(90deg 회전)과 분리 */
+    .nav-btn {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #475569;
+      border-radius: 7px;
+      padding: 0;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      min-width: 28px;
+      min-height: 28px;
+      width: 28px;
+      height: 28px;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-btn:active {
+      background: #f1f5f9;
+    }
+    .nav-row .nav-btn {
+      position: relative;
+      z-index: 2;
+    }
+    textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 11px;
+      font: inherit;
+      min-height: 72px;
+      resize: vertical;
+    }
     .check-delete {
       border: 1px solid #cbd5e1;
       background: #fff;
@@ -446,15 +505,15 @@
           <h2 class="title">오늘의 동물 캐릭터 상태</h2>
           <div id="animalWrap" class="progress-ring bear normal">
             <div class="ring-inner">
-              <svg class="pose pose-l0" viewBox="0 0 120 120"><g transform="translate(60 65) rotate(92) translate(-60 -65)"><circle cx="36" cy="32" r="10" fill="#b89472"></circle><circle cx="84" cy="32" r="10" fill="#b89472"></circle><rect x="26" y="30" width="68" height="66" rx="24" fill="#c2a084"></rect><ellipse cx="60" cy="56" rx="18" ry="14" fill="#e7d8c6"></ellipse><path d="M44 52 Q50 48 56 52" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M64 52 Q70 48 76 52" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M52 64 L68 64" stroke="#2f3b4a" stroke-width="2.2"></path><rect x="34" y="89" width="10" height="11" rx="4" fill="#b89472"></rect><rect x="76" y="89" width="10" height="11" rx="4" fill="#b89472"></rect></g></svg>
-              <svg class="pose pose-l1" viewBox="0 0 120 120"><g transform="translate(60 66) rotate(88) translate(-60 -66)"><circle cx="36" cy="34" r="10" fill="#bb956f"></circle><circle cx="84" cy="34" r="10" fill="#bb956f"></circle><rect x="28" y="34" width="64" height="62" rx="22" fill="#c7a27e"></rect><ellipse cx="60" cy="58" rx="18" ry="13" fill="#ecd9c0"></ellipse><path d="M44 55 Q50 52 56 55" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M64 55 Q70 52 76 55" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M53 66 L67 66" stroke="#2f3b4a" stroke-width="2.2"></path><rect x="36" y="89" width="9" height="10" rx="4" fill="#bb956f"></rect><rect x="75" y="89" width="9" height="10" rx="4" fill="#bb956f"></rect></g></svg>
-              <svg class="pose pose-l2" viewBox="0 0 120 120"><circle cx="36" cy="34" r="11" fill="#c89a6f"></circle><circle cx="84" cy="34" r="11" fill="#c89a6f"></circle><rect x="25" y="34" width="70" height="68" rx="26" fill="#cea77a"></rect><ellipse cx="60" cy="61" rx="20" ry="14" fill="#efdbbf"></ellipse><path d="M44 55 Q50 52 56 55" stroke="#1f2937" stroke-width="2.4" fill="none"></path><path d="M64 55 Q70 52 76 55" stroke="#1f2937" stroke-width="2.4" fill="none"></path><ellipse cx="48" cy="58" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="72" cy="58" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="60" cy="61" rx="4.2" ry="3" fill="#2f3b4a"></ellipse><path d="M50 70 Q60 64 70 70" stroke="#2f3b4a" stroke-width="2.3" fill="none"></path><rect x="35" y="95" width="12" height="12" rx="5" fill="#c89a6f"></rect><rect x="73" y="95" width="12" height="12" rx="5" fill="#c89a6f"></rect></svg>
-              <svg class="pose pose-l3" viewBox="0 0 120 120"><circle cx="36" cy="30" r="12" fill="#cea074"></circle><circle cx="84" cy="30" r="12" fill="#cea074"></circle><rect x="25" y="28" width="70" height="74" rx="28" fill="#d7ad7c"></rect><ellipse cx="60" cy="58" rx="20" ry="16" fill="#f3debf"></ellipse><circle cx="50" cy="53" r="3.2" fill="#1f2937"></circle><circle cx="70" cy="53" r="3.2" fill="#1f2937"></circle><ellipse cx="48" cy="57" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="72" cy="57" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="60" cy="60.5" rx="4.2" ry="3.2" fill="#2f3b4a"></ellipse><path d="M51 67 Q60 72 69 67" stroke="#2f3b4a" stroke-width="2.4" fill="none"></path><rect x="35" y="95" width="13" height="14" rx="5" fill="#cea074"></rect><rect x="72" y="95" width="13" height="14" rx="5" fill="#cea074"></rect></svg>
-              <svg class="pose pose-l4" viewBox="0 0 120 120"><circle cx="36" cy="30" r="12" fill="#d4a373"></circle><circle cx="84" cy="30" r="12" fill="#d4a373"></circle><rect x="25" y="28" width="70" height="74" rx="28" fill="#deb887"></rect><ellipse cx="60" cy="58" rx="20" ry="16" fill="#f6dfc5"></ellipse><circle cx="50" cy="53" r="3.2" fill="#1f2937"></circle><circle cx="70" cy="53" r="3.2" fill="#1f2937"></circle><ellipse cx="60" cy="60.5" rx="4.2" ry="3.2" fill="#2f3b4a"></ellipse><path d="M51 67 Q60 73 69 67" stroke="#2f3b4a" stroke-width="2.4" fill="none"></path><rect x="35" y="95" width="13" height="14" rx="5" fill="#d4a373"></rect><rect x="72" y="95" width="13" height="14" rx="5" fill="#d4a373"></rect></svg>
-              <svg class="pose pose-l5" viewBox="0 0 120 120"><circle cx="34" cy="28" r="12" fill="#d8a878"></circle><circle cx="86" cy="28" r="12" fill="#d8a878"></circle><rect x="22" y="24" width="76" height="80" rx="30" fill="#e2b982"></rect><ellipse cx="60" cy="55" rx="21" ry="16" fill="#f8e4cb"></ellipse><circle cx="48" cy="50" r="3.4" fill="#111827"></circle><circle cx="72" cy="50" r="3.4" fill="#111827"></circle><ellipse cx="60" cy="58" rx="4.5" ry="3.4" fill="#2f3b4a"></ellipse><path d="M49 64 Q60 74 71 64" stroke="#2f3b4a" stroke-width="2.8" fill="none"></path><rect x="33" y="98" width="14" height="15" rx="6" fill="#d8a878"></rect><rect x="73" y="98" width="14" height="15" rx="6" fill="#d8a878"></rect></svg>
-              <svg class="pose pose-l6" viewBox="0 0 120 120"><circle cx="33" cy="27" r="13" fill="#daab7a"></circle><circle cx="87" cy="27" r="13" fill="#daab7a"></circle><rect x="20" y="21" width="80" height="84" rx="31" fill="#e6be87"></rect><ellipse cx="60" cy="54" rx="22" ry="16" fill="#fae6ce"></ellipse><circle cx="47" cy="49" r="3.6" fill="#111827"></circle><circle cx="73" cy="49" r="3.6" fill="#111827"></circle><ellipse cx="60" cy="57" rx="4.6" ry="3.4" fill="#2f3b4a"></ellipse><path d="M48 63 Q60 76 72 63" stroke="#2f3b4a" stroke-width="2.8" fill="none"></path><rect x="32" y="99" width="15" height="15" rx="6" fill="#daab7a"></rect><rect x="73" y="99" width="15" height="15" rx="6" fill="#daab7a"></rect></svg>
-              <svg class="pose pose-l7" viewBox="0 0 120 120"><circle cx="33" cy="26" r="13" fill="#ddb07d"></circle><circle cx="87" cy="26" r="13" fill="#ddb07d"></circle><rect x="20" y="20" width="80" height="84" rx="31" fill="#ebc48d"></rect><ellipse cx="60" cy="54" rx="22" ry="16" fill="#fde9d2"></ellipse><circle cx="47" cy="49" r="3.7" fill="#111827"></circle><circle cx="73" cy="49" r="3.7" fill="#111827"></circle><ellipse cx="60" cy="57" rx="4.8" ry="3.5" fill="#2f3b4a"></ellipse><path d="M48 62 Q60 77 72 62" stroke="#2f3b4a" stroke-width="2.9" fill="none"></path><rect x="32" y="99" width="15" height="15" rx="6" fill="#ddb07d"></rect><rect x="73" y="99" width="15" height="15" rx="6" fill="#ddb07d"></rect></svg>
-              <svg class="pose pose-l8" viewBox="0 0 120 120"><circle cx="32" cy="25" r="14" fill="#e1b482"></circle><circle cx="88" cy="25" r="14" fill="#e1b482"></circle><rect x="18" y="18" width="84" height="88" rx="32" fill="#efc992"></rect><ellipse cx="60" cy="53" rx="23" ry="17" fill="#ffeed9"></ellipse><circle cx="46" cy="48" r="3.8" fill="#111827"></circle><circle cx="74" cy="48" r="3.8" fill="#111827"></circle><ellipse cx="60" cy="56.5" rx="5" ry="3.6" fill="#2f3b4a"></ellipse><path d="M47 61 Q60 79 73 61" stroke="#2f3b4a" stroke-width="3" fill="none"></path><rect x="31" y="100" width="16" height="16" rx="6" fill="#e1b482"></rect><rect x="73" y="100" width="16" height="16" rx="6" fill="#e1b482"></rect></svg>
+              <svg class="pose pose-l0" viewBox="0 0 120 120"><g transform="translate(60 65) rotate(92) translate(-60 -65)"><circle cx="36" cy="32" r="10" fill="#b89472"></circle><circle cx="84" cy="32" r="10" fill="#b89472"></circle><rect x="26" y="30" width="68" height="66" rx="24" fill="#c2a084"></rect><ellipse cx="60" cy="56" rx="18" ry="14" fill="#e7d8c6"></ellipse><path d="M44 52 Q50 48 56 52" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M64 52 Q70 48 76 52" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M52 64 L68 64" stroke="#2f3b4a" stroke-width="2.2"></path><rect x="34" y="89" width="10" height="11" rx="4" fill="#e7d8c6"></rect><rect x="76" y="89" width="10" height="11" rx="4" fill="#e7d8c6"></rect></g></svg>
+              <svg class="pose pose-l1" viewBox="0 0 120 120"><g transform="translate(60 66) rotate(88) translate(-60 -66)"><circle cx="36" cy="34" r="10" fill="#bb956f"></circle><circle cx="84" cy="34" r="10" fill="#bb956f"></circle><rect x="28" y="34" width="64" height="62" rx="22" fill="#c7a27e"></rect><ellipse cx="60" cy="58" rx="18" ry="13" fill="#ecd9c0"></ellipse><path d="M44 55 Q50 52 56 55" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M64 55 Q70 52 76 55" stroke="#334155" stroke-width="2.2" fill="none"></path><path d="M53 66 L67 66" stroke="#2f3b4a" stroke-width="2.2"></path><rect x="36" y="89" width="9" height="10" rx="4" fill="#ecd9c0"></rect><rect x="75" y="89" width="9" height="10" rx="4" fill="#ecd9c0"></rect></g></svg>
+              <svg class="pose pose-l2" viewBox="0 0 120 120"><circle cx="36" cy="34" r="11" fill="#c89a6f"></circle><circle cx="84" cy="34" r="11" fill="#c89a6f"></circle><rect x="25" y="34" width="70" height="68" rx="26" fill="#cea77a"></rect><ellipse cx="60" cy="61" rx="20" ry="14" fill="#efdbbf"></ellipse><path d="M44 55 Q50 52 56 55" stroke="#1f2937" stroke-width="2.4" fill="none"></path><path d="M64 55 Q70 52 76 55" stroke="#1f2937" stroke-width="2.4" fill="none"></path><ellipse cx="48" cy="58" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="72" cy="58" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="60" cy="61" rx="4.2" ry="3" fill="#2f3b4a"></ellipse><path d="M50 70 Q60 64 70 70" stroke="#2f3b4a" stroke-width="2.3" fill="none"></path><rect x="35" y="95" width="12" height="12" rx="5" fill="#efdbbf"></rect><rect x="73" y="95" width="12" height="12" rx="5" fill="#efdbbf"></rect></svg>
+              <svg class="pose pose-l3" viewBox="0 0 120 120"><circle cx="36" cy="30" r="12" fill="#cea074"></circle><circle cx="84" cy="30" r="12" fill="#cea074"></circle><rect x="25" y="28" width="70" height="74" rx="28" fill="#d7ad7c"></rect><ellipse cx="60" cy="58" rx="20" ry="16" fill="#f3debf"></ellipse><circle cx="50" cy="53" r="3.2" fill="#1f2937"></circle><circle cx="70" cy="53" r="3.2" fill="#1f2937"></circle><ellipse cx="48" cy="57" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="72" cy="57" rx="6.2" ry="1.8" fill="#64748b" opacity="0.7"></ellipse><ellipse cx="60" cy="60.5" rx="4.2" ry="3.2" fill="#2f3b4a"></ellipse><path d="M51 67 Q60 72 69 67" stroke="#2f3b4a" stroke-width="2.4" fill="none"></path><rect x="35" y="95" width="13" height="14" rx="5" fill="#f3debf"></rect><rect x="72" y="95" width="13" height="14" rx="5" fill="#f3debf"></rect></svg>
+              <svg class="pose pose-l4" viewBox="0 0 120 120"><circle cx="36" cy="30" r="12" fill="#d4a373"></circle><circle cx="84" cy="30" r="12" fill="#d4a373"></circle><rect x="25" y="28" width="70" height="74" rx="28" fill="#deb887"></rect><ellipse cx="60" cy="58" rx="20" ry="16" fill="#f6dfc5"></ellipse><circle cx="50" cy="53" r="3.2" fill="#1f2937"></circle><circle cx="70" cy="53" r="3.2" fill="#1f2937"></circle><ellipse cx="60" cy="60.5" rx="4.2" ry="3.2" fill="#2f3b4a"></ellipse><path d="M51 67 Q60 73 69 67" stroke="#2f3b4a" stroke-width="2.4" fill="none"></path><rect x="35" y="95" width="13" height="14" rx="5" fill="#f6dfc5"></rect><rect x="72" y="95" width="13" height="14" rx="5" fill="#f6dfc5"></rect></svg>
+              <svg class="pose pose-l5" viewBox="0 0 120 120"><circle cx="34" cy="28" r="12" fill="#d8a878"></circle><circle cx="86" cy="28" r="12" fill="#d8a878"></circle><rect x="22" y="24" width="76" height="80" rx="30" fill="#e2b982"></rect><ellipse cx="60" cy="55" rx="21" ry="16" fill="#f8e4cb"></ellipse><circle cx="48" cy="50" r="3.4" fill="#111827"></circle><circle cx="72" cy="50" r="3.4" fill="#111827"></circle><ellipse cx="60" cy="58" rx="4.5" ry="3.4" fill="#2f3b4a"></ellipse><path d="M49 64 Q60 74 71 64" stroke="#2f3b4a" stroke-width="2.8" fill="none"></path><rect x="33" y="98" width="14" height="15" rx="6" fill="#f8e4cb"></rect><rect x="73" y="98" width="14" height="15" rx="6" fill="#f8e4cb"></rect></svg>
+              <svg class="pose pose-l6" viewBox="0 0 120 120"><circle cx="33" cy="27" r="13" fill="#daab7a"></circle><circle cx="87" cy="27" r="13" fill="#daab7a"></circle><rect x="20" y="21" width="80" height="84" rx="31" fill="#e6be87"></rect><ellipse cx="60" cy="54" rx="22" ry="16" fill="#fae6ce"></ellipse><circle cx="47" cy="49" r="3.6" fill="#111827"></circle><circle cx="73" cy="49" r="3.6" fill="#111827"></circle><ellipse cx="60" cy="57" rx="4.6" ry="3.4" fill="#2f3b4a"></ellipse><path d="M48 63 Q60 76 72 63" stroke="#2f3b4a" stroke-width="2.8" fill="none"></path><rect x="32" y="99" width="15" height="15" rx="6" fill="#fae6ce"></rect><rect x="73" y="99" width="15" height="15" rx="6" fill="#fae6ce"></rect></svg>
+              <svg class="pose pose-l7" viewBox="0 0 120 120"><circle cx="33" cy="26" r="13" fill="#ddb07d"></circle><circle cx="87" cy="26" r="13" fill="#ddb07d"></circle><rect x="20" y="20" width="80" height="84" rx="31" fill="#ebc48d"></rect><ellipse cx="60" cy="54" rx="22" ry="16" fill="#fde9d2"></ellipse><circle cx="47" cy="49" r="3.7" fill="#111827"></circle><circle cx="73" cy="49" r="3.7" fill="#111827"></circle><ellipse cx="60" cy="57" rx="4.8" ry="3.5" fill="#2f3b4a"></ellipse><path d="M48 62 Q60 77 72 62" stroke="#2f3b4a" stroke-width="2.9" fill="none"></path><rect x="32" y="99" width="15" height="15" rx="6" fill="#fde9d2"></rect><rect x="73" y="99" width="15" height="15" rx="6" fill="#fde9d2"></rect></svg>
+              <svg class="pose pose-l8" viewBox="0 0 120 120"><circle cx="32" cy="25" r="14" fill="#e1b482"></circle><circle cx="88" cy="25" r="14" fill="#e1b482"></circle><rect x="18" y="18" width="84" height="88" rx="32" fill="#efc992"></rect><ellipse cx="60" cy="53" rx="23" ry="17" fill="#ffeed9"></ellipse><circle cx="46" cy="48" r="3.8" fill="#111827"></circle><circle cx="74" cy="48" r="3.8" fill="#111827"></circle><ellipse cx="60" cy="56.5" rx="5" ry="3.6" fill="#2f3b4a"></ellipse><path d="M47 61 Q60 79 73 61" stroke="#2f3b4a" stroke-width="3" fill="none"></path><rect x="31" y="100" width="16" height="16" rx="6" fill="#ffeed9"></rect><rect x="73" y="100" width="16" height="16" rx="6" fill="#ffeed9"></rect></svg>
               <div class="fx">
                 <span class="fx-item fx-thermo">🌡️</span>
                 <span class="fx-item fx-swirl1">🌀</span><span class="fx-item fx-swirl2">🌀</span>
@@ -498,8 +557,17 @@
               <input id="sleepHoursAuto" type="text" readonly placeholder="자동 계산됨" />
             </div>
             <div style="margin-top: 10px;">
-              <label for="todayWakeCount">기상 횟수</label>
+              <label for="todayWakeCount">중간에 깬 횟수</label>
               <input id="todayWakeCount" type="number" min="0" max="20" step="1" placeholder="1" />
+            </div>
+            <div style="margin-top: 10px;">
+              <button id="addSleepBtn" class="btn" type="button">수면기록 추가</button>
+            </div>
+            <p id="sleepTotalHint" class="muted" style="margin-top: 10px;">오늘 누적 수면: -</p>
+            <ul id="sleepSegmentList" class="history-list" style="margin-top: 8px;"></ul>
+            <div style="margin-top: 10px;">
+              <label for="fatigueMemo">오늘 피로/컨디션 비고 (선택, 분석에 반영)</label>
+              <textarea id="fatigueMemo" placeholder="예: 야근, 시험 스트레스, 낮잠 짧음 등 적어도 되고 안 적어도 됩니다"></textarea>
             </div>
           </div>
         </div>
@@ -516,16 +584,6 @@
               <button type="button" class="condition-btn" data-score="3">보통</button>
               <button type="button" class="condition-btn" data-score="4">좋음</button>
               <button type="button" class="condition-btn" data-score="5">최고</button>
-            </div>
-          </div>
-          <div style="margin-top: 10px;">
-            <label>체크 시점 부하 (낮음 -> 높음)</label>
-            <div id="checkLoadPicker" class="condition-picker">
-              <button type="button" class="condition-btn" data-load="1">1</button>
-              <button type="button" class="condition-btn" data-load="2">2</button>
-              <button type="button" class="condition-btn" data-load="3">3</button>
-              <button type="button" class="condition-btn" data-load="4">4</button>
-              <button type="button" class="condition-btn" data-load="5">5</button>
             </div>
           </div>
           <div class="row" style="margin-top: 10px;">
@@ -550,9 +608,10 @@
             <div>
               <label for="scheduleLoad">부하</label>
               <select id="scheduleLoad">
+                <option value="">미작성</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
-                <option value="3" selected>3</option>
+                <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
               </select>
@@ -590,6 +649,11 @@
         </div>
         <div class="card">
           <h2 class="title">월별 분석</h2>
+          <div class="nav-row">
+            <button id="monthPrev" class="nav-btn" type="button" aria-label="이전 달">&lt;</button>
+            <span id="monthNavLabel" class="nav-label">-</span>
+            <button id="monthNext" class="nav-btn" type="button" aria-label="다음 달">&gt;</button>
+          </div>
           <p class="muted">원 색은 컨디션, 원 안 숫자는 수면시간(시간)입니다.</p>
           <div class="legend">
             <span><span class="mark" style="background:#16a34a;"></span>좋음</span>
@@ -601,6 +665,11 @@
 
         <div class="card">
           <h2 class="title">주간 그래프</h2>
+          <div class="nav-row">
+            <button id="weekPrev" class="nav-btn" type="button" aria-label="이전 주">&lt;</button>
+            <span id="weekNavLabel" class="nav-label">-</span>
+            <button id="weekNext" class="nav-btn" type="button" aria-label="다음 주">&gt;</button>
+          </div>
           <p class="muted">핑크 막대: 수면시간 / 파란 선: 컨디션</p>
           <canvas id="weekChart" width="390" height="250"></canvas>
         </div>
@@ -645,8 +714,9 @@
     const LEGACY_STORAGE_KEY = "sleepConditionRecords_v1";
     const GOAL_KEY = "sleepGoalHours_v1";
     let selectedCondition = 3;
-    let selectedCheckLoad = 3;
     let records = loadRecords();
+    let viewMonth = { y: new Date().getFullYear(), m: new Date().getMonth() };
+    let viewWeekMonday = null;
 
     const els = {
       tabs: document.querySelectorAll(".tab-panel"),
@@ -665,9 +735,12 @@
       sleepCollapsible: document.getElementById("sleepCollapsible"),
       sleepRange: document.getElementById("sleepRange"),
       sleepHoursAuto: document.getElementById("sleepHoursAuto"),
+      addSleepBtn: document.getElementById("addSleepBtn"),
+      sleepSegmentList: document.getElementById("sleepSegmentList"),
+      sleepTotalHint: document.getElementById("sleepTotalHint"),
+      fatigueMemo: document.getElementById("fatigueMemo"),
       todayWakeCount: document.getElementById("todayWakeCount"),
       conditionPicker: document.getElementById("conditionPicker"),
-      checkLoadPicker: document.getElementById("checkLoadPicker"),
       addCheckBtn: document.getElementById("addCheckBtn"),
       checksToggleBtn: document.getElementById("checksToggleBtn"),
       checksCollapsible: document.getElementById("checksCollapsible"),
@@ -680,9 +753,74 @@
       historyToggleBtn: document.getElementById("historyToggleBtn"),
       historyList: document.getElementById("historyList"),
       monthGrid: document.getElementById("monthGrid"),
+      monthPrev: document.getElementById("monthPrev"),
+      monthNext: document.getElementById("monthNext"),
+      monthNavLabel: document.getElementById("monthNavLabel"),
       weekChart: document.getElementById("weekChart"),
+      weekPrev: document.getElementById("weekPrev"),
+      weekNext: document.getElementById("weekNext"),
+      weekNavLabel: document.getElementById("weekNavLabel"),
       fatigueReason: document.getElementById("fatigueReason")
     };
+
+    function startOfWeekMonday(d) {
+      const x = new Date(d);
+      const day = x.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      x.setDate(x.getDate() + diff);
+      x.setHours(0, 0, 0, 0);
+      return x;
+    }
+
+    function localYMD(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return y + "-" + m + "-" + day;
+    }
+
+    function weekIndexInMonth(monday) {
+      const y = monday.getFullYear();
+      const m = monday.getMonth();
+      const first = new Date(y, m, 1);
+      let firstMon = startOfWeekMonday(first);
+      if (firstMon.getMonth() !== m) firstMon.setDate(firstMon.getDate() + 7);
+      const diffDays = Math.round((monday.getTime() - firstMon.getTime()) / 86400000);
+      const n = 1 + Math.floor(diffDays / 7);
+      return Math.max(1, n);
+    }
+
+    function formatWeekNavLabel(monday) {
+      return (monday.getMonth() + 1) + "월 " + weekIndexInMonth(monday) + "째주";
+    }
+
+    function getTotalSleepHours(rec) {
+      if (!rec) return 0;
+      if (Array.isArray(rec.sleepSegments) && rec.sleepSegments.length) {
+        return rec.sleepSegments.reduce((a, s) => a + (Number(s.hours) || 0), 0);
+      }
+      return Number(rec.sleepHours) || 0;
+    }
+
+    function recalcRecordSleepTotal(rec) {
+      rec.sleepHours = getTotalSleepHours(rec);
+    }
+
+    function normalizeRecordSleep(rec) {
+      if (!rec) return false;
+      if (!Array.isArray(rec.sleepSegments)) rec.sleepSegments = [];
+      let migrated = false;
+      if (rec.sleepSegments.length === 0 && rec.sleepRange && Number(rec.sleepHours) > 0) {
+        rec.sleepSegments.push({
+          id: "mig_" + rec.id,
+          range: rec.sleepRange,
+          hours: Number(rec.sleepHours) || 0
+        });
+        migrated = true;
+      }
+      recalcRecordSleepTotal(rec);
+      return migrated;
+    }
 
     init();
 
@@ -691,10 +829,11 @@
       bindConditionPicker();
       bindGoalInput();
       bindSleepAutoCalc();
-      bindDailyAutoSave();
+      bindDailySaveGoalWakeMemo();
+      bindAddSleepSegment();
       bindSleepToggle();
+      bindAnalysisNav();
       bindCheckAdd();
-      bindCheckLoadPicker();
       bindHistoryToggle();
       bindChecksToggle();
       initDefaults();
@@ -708,7 +847,10 @@
           const target = btn.dataset.tab;
           els.tabs.forEach(tab => tab.classList.toggle("active", tab.id === target));
           els.tabBtns.forEach(b => b.classList.toggle("active", b === btn));
-          if (target === "tab3") drawWeeklyChart();
+          if (target === "tab3") {
+            renderMonthGrid();
+            drawWeeklyChart();
+          }
         });
       });
     }
@@ -729,7 +871,7 @@
         const goal = Number(els.goalHoursInput.value);
         if (Number.isFinite(goal) && goal > 0) {
           localStorage.setItem(GOAL_KEY, String(goal));
-          renderAll();
+          saveDailyFields();
         }
       });
     }
@@ -747,12 +889,13 @@
         const time = currentTimeHHMM();
         const scheduleCategory = els.scheduleCategory.value;
         const scheduleRange = els.scheduleRange.value.trim();
-        const scheduleLoad = Number(els.scheduleLoad.value || 3);
+        const scheduleLoadRaw = els.scheduleLoad.value;
+        const scheduleLoad = scheduleLoadRaw === "" ? null : Number(scheduleLoadRaw);
         const scheduleText = els.scheduleText.value.trim();
         if (!date) return alert("기록 날짜를 선택해주세요.");
 
         const record = findOrCreateRecordByDate(date);
-        record.checks.push({ id: "c_" + Date.now() + "_" + Math.floor(Math.random() * 100000), time, condition: selectedCondition, load: selectedCheckLoad });
+        record.checks.push({ id: "c_" + Date.now() + "_" + Math.floor(Math.random() * 100000), time, condition: selectedCondition, load: scheduleLoad });
 
         if (scheduleCategory || scheduleRange || scheduleText) {
           if (!scheduleCategory) return alert("스케줄 카테고리를 선택해주세요.");
@@ -773,7 +916,7 @@
           record.schedules.sort((a, b) => (a.start || "").localeCompare(b.start || ""));
           els.scheduleCategory.value = "";
           els.scheduleRange.value = "";
-          els.scheduleLoad.value = "3";
+          els.scheduleLoad.value = "";
           els.scheduleText.value = "";
         }
 
@@ -786,75 +929,196 @@
 
     }
 
-    function bindCheckLoadPicker() {
-      const buttons = els.checkLoadPicker.querySelectorAll(".condition-btn");
-      buttons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          selectedCheckLoad = Number(btn.dataset.load);
-          buttons.forEach(b => b.classList.toggle("selected", b === btn));
+    function bindDailySaveGoalWakeMemo() {
+      let memoTimer;
+      const save = () => saveDailyFields();
+      els.todayWakeCount.addEventListener("change", save);
+      if (els.fatigueMemo) {
+        els.fatigueMemo.addEventListener("input", () => {
+          clearTimeout(memoTimer);
+          memoTimer = setTimeout(save, 450);
         });
+        els.fatigueMemo.addEventListener("blur", save);
+      }
+    }
+
+    function bindAddSleepSegment() {
+      if (!els.addSleepBtn) return;
+      els.addSleepBtn.addEventListener("click", () => {
+        const date = els.recordDate.value;
+        const range = els.sleepRange.value.trim();
+        const hours = calcSleepHoursFromRange(range);
+        if (!date) return alert("기록 날짜가 없습니다.");
+        if (!range || !Number.isFinite(hours) || hours <= 0) {
+          return alert("수면 시간을 예시처럼 입력해 주세요. (예: 12-13 또는 23-7)");
+        }
+        const record = findOrCreateRecordByDate(date);
+        normalizeRecordSleep(record);
+        if (!Array.isArray(record.sleepSegments)) record.sleepSegments = [];
+        record.sleepSegments.push({
+          id: "seg_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
+          range,
+          hours
+        });
+        recalcRecordSleepTotal(record);
+        if (record.sleepSegments.length === 1) {
+          record.sleepRange = range;
+        } else {
+          record.sleepRange = record.sleepSegments.map(s => s.range).join(", ");
+        }
+        record.recordedAt = new Date().toISOString();
+        if (record.checks.length) record.condition = average(record.checks.map(c => c.condition));
+        upsertRecordByDate(record);
+        saveRecords();
+        els.sleepRange.value = "";
+        if (els.sleepHoursAuto) els.sleepHoursAuto.value = "";
+        renderSleepSegmentsForDate(date);
+        renderChecksForDate(date);
+        renderAll();
       });
-      buttons[2].classList.add("selected");
     }
 
-    function bindDailyAutoSave() {
-      const onChange = () => saveTodayRecord();
-      els.sleepRange.addEventListener("change", onChange);
-      els.todayWakeCount.addEventListener("change", onChange);
-      els.goalHoursInput.addEventListener("change", onChange);
+    function bindAnalysisNav() {
+      if (els.monthPrev) {
+        els.monthPrev.addEventListener("click", e => {
+          e.preventDefault();
+          viewMonth.m--;
+          if (viewMonth.m < 0) {
+            viewMonth.m = 11;
+            viewMonth.y--;
+          }
+          renderMonthGrid();
+        });
+      }
+      if (els.monthNext) {
+        els.monthNext.addEventListener("click", e => {
+          e.preventDefault();
+          viewMonth.m++;
+          if (viewMonth.m > 11) {
+            viewMonth.m = 0;
+            viewMonth.y++;
+          }
+          renderMonthGrid();
+        });
+      }
+      if (els.weekPrev) {
+        els.weekPrev.addEventListener("click", e => {
+          e.preventDefault();
+          const base = viewWeekMonday ? new Date(viewWeekMonday) : startOfWeekMonday(new Date());
+          base.setHours(0, 0, 0, 0);
+          base.setDate(base.getDate() - 7);
+          viewWeekMonday = base;
+          drawWeeklyChart();
+        });
+      }
+      if (els.weekNext) {
+        els.weekNext.addEventListener("click", e => {
+          e.preventDefault();
+          const base = viewWeekMonday ? new Date(viewWeekMonday) : startOfWeekMonday(new Date());
+          base.setHours(0, 0, 0, 0);
+          base.setDate(base.getDate() + 7);
+          viewWeekMonday = base;
+          drawWeeklyChart();
+        });
+      }
     }
 
-    function saveTodayRecord() {
+    function saveDailyFields() {
       const date = els.recordDate.value;
-      const goalHours = Number(els.goalHoursInput.value || localStorage.getItem(GOAL_KEY) || 8);
-      const sleepRange = els.sleepRange.value.trim();
-      const todayWakeCount = Number(els.todayWakeCount.value || 0);
-      const sleepHours = calcSleepHoursFromRange(sleepRange);
       if (!date) return;
+      const goalHours = Number(els.goalHoursInput.value || localStorage.getItem(GOAL_KEY) || 8);
+      const todayWakeCount = Number(els.todayWakeCount.value || 0);
+      const memo = els.fatigueMemo ? els.fatigueMemo.value.trim() : "";
       if (!Number.isFinite(goalHours) || goalHours <= 0) return;
-      if (!sleepRange || !Number.isFinite(sleepHours) || sleepHours <= 0) return;
       if (!Number.isFinite(todayWakeCount) || todayWakeCount < 0) return;
 
       localStorage.setItem(GOAL_KEY, String(goalHours));
       const record = findOrCreateRecordByDate(date);
       record.goalHours = goalHours;
-      record.sleepRange = sleepRange;
-      record.sleepHours = sleepHours;
       record.wakeCount = todayWakeCount;
+      record.fatigueMemo = memo;
       record.recordedAt = new Date().toISOString();
       if (record.checks.length) record.condition = average(record.checks.map(c => c.condition));
       upsertRecordByDate(record);
       saveRecords();
-      renderChecksForDate(date);
       renderAll();
     }
 
     function initDefaults() {
       const now = new Date();
-      const nowDate = now.toISOString().slice(0, 10);
+      const nowDate = localYMD(now);
       els.recordDate.value = nowDate;
       els.scheduleRange.value = "";
       updateRecordTime();
       const savedGoal = localStorage.getItem(GOAL_KEY);
       if (savedGoal) els.goalHoursInput.value = savedGoal;
+      viewMonth = { y: now.getFullYear(), m: now.getMonth() };
+      viewWeekMonday = startOfWeekMonday(now);
       hydrateTodayForm(nowDate);
       renderChecksForDate(nowDate);
     }
 
     function hydrateTodayForm(date) {
       const record = records.find(r => r.date === date);
-      if (!record) return;
+      if (!record) {
+        if (els.fatigueMemo) els.fatigueMemo.value = "";
+        els.sleepRange.value = "";
+        if (els.sleepHoursAuto) els.sleepHoursAuto.value = "";
+        renderSleepSegmentsForDate(date);
+        return;
+      }
+      normalizeRecordSleep(record);
       if (Number.isFinite(Number(record.goalHours)) && Number(record.goalHours) > 0) {
         els.goalHoursInput.value = String(record.goalHours);
       }
-      if (record.sleepRange) {
-        els.sleepRange.value = record.sleepRange;
-        const h = calcSleepHoursFromRange(record.sleepRange);
-        els.sleepHoursAuto.value = Number.isFinite(h) ? trimHour(h) + "시간" : "";
-      }
+      els.sleepRange.value = "";
+      if (els.sleepHoursAuto) els.sleepHoursAuto.value = "";
+      if (els.fatigueMemo) els.fatigueMemo.value = record.fatigueMemo || "";
       if (Number.isFinite(Number(record.wakeCount))) {
         els.todayWakeCount.value = String(record.wakeCount);
       }
+      renderSleepSegmentsForDate(date);
+    }
+
+    function renderSleepSegmentsForDate(date) {
+      if (!els.sleepSegmentList || !els.sleepTotalHint) return;
+      const record = records.find(r => r.date === date);
+      els.sleepSegmentList.innerHTML = "";
+      if (!record || !Array.isArray(record.sleepSegments) || !record.sleepSegments.length) {
+        els.sleepSegmentList.innerHTML = "<li class='history-item muted'>등록된 수면 구간이 없습니다. 시간을 입력하고 <strong>수면기록 추가</strong>를 눌러 주세요.</li>";
+        els.sleepTotalHint.textContent = "오늘 누적 수면: 0시간";
+        return;
+      }
+      const total = getTotalSleepHours(record);
+      els.sleepTotalHint.textContent = "오늘 누적 수면: " + trimHour(total) + "시간 (" + record.sleepSegments.length + "구간)";
+      record.sleepSegments.forEach(seg => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.innerHTML =
+          "<div><strong>" + escapeHtml(seg.range) + "</strong> → " + trimHour(seg.hours) + "시간</div>" +
+          "<div><button type='button' class='check-delete sleep-seg-del' data-id='" + escapeHtml(seg.id) + "'>삭제</button></div>";
+        els.sleepSegmentList.appendChild(li);
+      });
+      bindDeleteSleepSegment(date);
+    }
+
+    function bindDeleteSleepSegment(date) {
+      const buttons = els.sleepSegmentList.querySelectorAll(".sleep-seg-del");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const segId = btn.dataset.id;
+          const record = findOrCreateRecordByDate(date);
+          normalizeRecordSleep(record);
+          record.sleepSegments = record.sleepSegments.filter(s => s.id !== segId);
+          recalcRecordSleepTotal(record);
+          record.sleepRange = record.sleepSegments.length ? record.sleepSegments.map(s => s.range).join(", ") : "";
+          record.recordedAt = new Date().toISOString();
+          upsertRecordByDate(record);
+          saveRecords();
+          renderSleepSegmentsForDate(date);
+          renderAll();
+        });
+      });
     }
 
     function bindHistoryToggle() {
@@ -914,9 +1178,9 @@
       const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
       const recent7 = sorted.slice(-7);
       const prev7 = sorted.slice(-14, -7);
-      const avgSleepRecent = average(recent7.map(r => r.sleepHours));
+      const avgSleepRecent = average(recent7.map(r => getTotalSleepHours(r)));
       const avgCondRecent = average(recent7.map(r => r.condition));
-      const avgSleepPrev = average(prev7.map(r => r.sleepHours));
+      const avgSleepPrev = average(prev7.map(r => getTotalSleepHours(r)));
       const avgCondPrev = average(prev7.map(r => r.condition));
       els.avgSleep.textContent = Number.isFinite(avgSleepRecent) ? avgSleepRecent.toFixed(1) + "시간" : "-";
       els.avgCondition.textContent = Number.isFinite(avgCondRecent) ? avgCondRecent.toFixed(1) + " / 5" : "-";
@@ -979,13 +1243,15 @@
       checks.forEach(c => {
         const li = document.createElement("li");
         li.className = "history-item";
+        const loadText = Number.isFinite(Number(c.load)) ? trimHour(c.load) : "미작성";
         li.innerHTML = "<div><strong>" + c.time + "</strong> 컨디션 체크</div>" +
           "<div><span class='dot' style='background:" + colorByCondition(c.condition) + ";'></span>컨디션 " + trimHour(c.condition) +
-          " / 부하 " + trimHour(c.load || 3) +
+          " / 부하 " + loadText +
           " <button class='check-delete' data-id='" + c.id + "' type='button'>x</button></div>";
         els.checksList.appendChild(li);
       });
-      els.checksAvg.textContent = "평균 컨디션: " + trimHour(average(checks.map(c => c.condition))) + " / 평균 부하: " + trimHour(average(checks.map(c => Number(c.load || 3))));
+      const validLoads = checks.map(c => Number(c.load)).filter(Number.isFinite);
+      els.checksAvg.textContent = "평균 컨디션: " + trimHour(average(checks.map(c => c.condition))) + " / 평균 부하: " + (validLoads.length ? trimHour(average(validLoads)) : "미작성");
       bindDeleteCheck(date);
     }
 
@@ -1015,47 +1281,75 @@
         return;
       }
       sorted.forEach(r => {
-        const scheduleAvg = Array.isArray(r.schedules) && r.schedules.length ? average(r.schedules.map(s => s.load)) : NaN;
+        const scheduleLoads = Array.isArray(r.schedules) ? r.schedules.map(s => Number(s.load)).filter(Number.isFinite) : [];
+        const scheduleAvg = scheduleLoads.length ? average(scheduleLoads) : NaN;
         const li = document.createElement("li");
         li.className = "history-item";
         li.innerHTML =
-          "<div><strong>" + r.date + "</strong><br>목표 " + trimHour(r.goalHours || localStorage.getItem(GOAL_KEY)) + "h / 수면 " + trimHour(r.sleepHours) + "h / 평균 기상 " + trimHour(r.wakeCount) + "회 / 부하 " + (Number.isFinite(scheduleAvg) ? trimHour(scheduleAvg) : "-") + "</div>" +
+          "<div><strong>" + r.date + "</strong><br>목표 " + trimHour(r.goalHours || localStorage.getItem(GOAL_KEY)) + "h / 수면 " + trimHour(getTotalSleepHours(r)) + "h / 중간에 깸 " + trimHour(r.wakeCount) + "회 / 부하 " + (Number.isFinite(scheduleAvg) ? trimHour(scheduleAvg) : "-") + "</div>" +
           "<div><span class='dot' style='background:" + colorByCondition(r.condition) + ";'></span>" + conditionText(r.condition) + " (" + trimHour(r.condition) + ")</div>";
         els.historyList.appendChild(li);
       });
     }
 
+    function analyzeMemoKeywords(memo) {
+      if (!memo || !String(memo).trim()) return [];
+      const hits = [];
+      const rules = [
+        [/야근|새벽|늦게\s*잠|밤새|늦잠/, "늦은 시간 활동·수면 패턴이 피로를 키웠을 수 있어요"],
+        [/시험|테스트|발표|면접/, "시험이나 발표 등 긴장 요인이 컨디션에 영향을 줄 수 있어요"],
+        [/스트레스|불안|긴장/, "스트레스나 불안이 신체 컨디션과 연결될 수 있어요"],
+        [/술|음주|회식|술자리/, "음주는 수면의 질을 떨어뜨려 다음 날 피로를 남길 수 있어요"],
+        [/커피|카페인|에너지\s*드링크/, "카페인은 잠들기 어렵게 만들거나 수면이 얕아질 수 있어요"],
+        [/운동|헬스|러닝/, "운동 직후나 과부하는 회복 수면이 더 필요할 수 있어요"],
+        [/과제|레포트|프로젝트|보고서/, "과제나 업무 부담이 긴장 상태를 길게 유지했을 수 있어요"],
+        [/낮잠|낮\s*수면/, "낮잠이 있다면 야간 수면과 합쳐서 총 수면 시간을 같이 보는 것이 좋아요"],
+        [/두통|몸살|감기|아픔/, "신체 증상이 있다면 휴식과 수면 우선순위를 높여 보세요"],
+        [/산책|스트레칭|명상/, "가벼운 회복 활동은 컨디션 개선에 도움이 될 수 있어요"]
+      ];
+      for (const [re, msg] of rules) {
+        if (re.test(memo)) hits.push(msg);
+      }
+      const seen = new Set();
+      return hits.filter(h => (seen.has(h) ? false : (seen.add(h), true))).slice(0, 5);
+    }
+
     function renderFatigueReason() {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = localYMD(new Date());
       const record = records.find(r => r.date === today) || [...records].sort((a, b) => b.date.localeCompare(a.date))[0];
       if (!record) {
-        els.fatigueReason.textContent = "기록이 쌓이면 수면/컨디션/스케줄 부하를 합쳐 피로 이유를 알려드려요.";
+        els.fatigueReason.textContent = "기록이 쌓이면 수면·컨디션·스케줄 부하와 비고 키워드를 바탕으로 피로 요인을 정리해 드려요.";
         return;
       }
-      const sleep = Number(record.sleepHours) || 0;
+      normalizeRecordSleep(record);
+      const sleep = getTotalSleepHours(record);
       const goal = Number(record.goalHours || localStorage.getItem(GOAL_KEY)) || 8;
       const cond = Number(record.condition) || 3;
       const loadAvg = Array.isArray(record.schedules) && record.schedules.length
-        ? average(record.schedules.map(s => s.load))
-        : 0;
+        ? average(record.schedules.map(s => Number(s.load)).filter(Number.isFinite))
+        : NaN;
+      const memoBits = analyzeMemoKeywords(record.fatigueMemo || "");
       const reasons = [];
-      if (sleep < goal - 1) reasons.push("목표보다 수면이 부족합니다");
-      if (loadAvg >= 4) reasons.push("스케줄 강도가 높아 피로 누적 가능성이 큽니다");
-      if (loadAvg >= 3 && cond <= 2.5) reasons.push("높은 부하와 낮은 컨디션이 함께 나타납니다");
-      if (!reasons.length && cond >= 3.6) reasons.push("수면과 일정 밸런스가 좋아 비교적 안정적입니다");
-      if (!reasons.length) reasons.push("수면과 스케줄 부하가 복합적으로 영향을 줍니다");
-      els.fatigueReason.textContent = "최근 분석: " + reasons.join(". ") + ".";
+      if (sleep < goal - 1) reasons.push("목표보다 수면이 부족한 편이에요");
+      if (Number.isFinite(loadAvg) && loadAvg >= 4) reasons.push("스케줄 부하가 높아 피로가 쌓였을 수 있어요");
+      if (Number.isFinite(loadAvg) && loadAvg >= 3 && cond <= 2.5) reasons.push("부하가 높고 컨디션도 낮게 나왔어요");
+      if (Number(record.wakeCount) >= 3) reasons.push("중간에 자주 깼다면 수면의 연속성이 떨어졌을 수 있어요");
+      memoBits.forEach(t => reasons.push("[비고] " + t));
+      if (!memoBits.length && !reasons.length && cond >= 3.6) reasons.push("수면과 일정 밸런스가 비교적 안정적으로 보여요");
+      if (!reasons.length) reasons.push("비고에 오늘 상황을 적어 두면 더 구체적인 해석이 가능해요");
+      els.fatigueReason.innerHTML = "<strong>오늘 요약</strong><br>" + reasons.join("<br>");
     }
 
     function renderMonthGrid() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
+      const year = viewMonth.y;
+      const month = viewMonth.m;
+      if (els.monthNavLabel) els.monthNavLabel.textContent = "< " + (month + 1) + "월 >";
       const days = new Date(year, month + 1, 0).getDate();
       els.monthGrid.innerHTML = "";
       for (let day = 1; day <= days; day++) {
         const date = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
         const record = records.find(r => r.date === date);
+        if (record) normalizeRecordSleep(record);
         const cell = document.createElement("div");
         cell.className = "cell";
         const dayEl = document.createElement("span");
@@ -1066,7 +1360,7 @@
           const circle = document.createElement("div");
           circle.className = "cond-circle";
           circle.style.background = colorByCondition(record.condition);
-          circle.textContent = trimHour(record.sleepHours);
+          circle.textContent = trimHour(getTotalSleepHours(record));
           circle.title = record.date + " / 컨디션 " + conditionText(record.condition);
           cell.appendChild(circle);
         } else {
@@ -1079,15 +1373,18 @@
     }
 
     function drawWeeklyChart() {
+      if (els.weekNavLabel && viewWeekMonday) {
+        els.weekNavLabel.textContent = "< " + formatWeekNavLabel(viewWeekMonday) + " >";
+      }
       const canvas = els.weekChart;
       const ctx = canvas.getContext("2d");
       const width = canvas.width;
       const height = canvas.height;
       ctx.clearRect(0, 0, width, height);
-      const pad = { top: 24, right: 30, bottom: 30, left: 34 };
+      const pad = { top: 24, right: 30, bottom: 36, left: 34 };
       const chartW = width - pad.left - pad.right;
       const chartH = height - pad.top - pad.bottom;
-      const recent = getRecent7Filled();
+      const recent = getWeekFilled(viewWeekMonday);
       const maxSleep = 10;
       const minSleep = 0;
       const maxCond = 5;
@@ -1125,7 +1422,8 @@
         const lineY = pad.top + chartH - ((item.condition - minCond) / (maxCond - minCond)) * chartH;
         points.push({ x: xCenter, y: lineY });
         ctx.fillStyle = "#475569";
-        ctx.fillText(item.label, xCenter - 7, height - 10);
+        const cap = item.shortLabel + " " + item.label;
+        ctx.fillText(cap, xCenter - ctx.measureText(cap).width / 2, height - 10);
       });
 
       ctx.strokeStyle = "#3b82f6";
@@ -1145,16 +1443,24 @@
       });
     }
 
-    function getRecent7Filled() {
-      const labels = ["일", "월", "화", "수", "목", "금", "토"];
+    function getWeekFilled(weekStartMonday) {
+      const labels = ["월", "화", "수", "목", "금", "토", "일"];
       const map = new Map(records.map(r => [r.date, r]));
       const arr = [];
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const date = d.toISOString().slice(0, 10);
+      const start = weekStartMonday ? new Date(weekStartMonday) : startOfWeekMonday(new Date());
+      start.setHours(0, 0, 0, 0);
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        const date = localYMD(d);
         const rec = map.get(date);
-        arr.push({ label: labels[d.getDay()], sleepHours: rec ? rec.sleepHours : 0, condition: rec ? rec.condition : 3 });
+        if (rec) normalizeRecordSleep(rec);
+        arr.push({
+          label: labels[i],
+          shortLabel: (d.getMonth() + 1) + "/" + d.getDate(),
+          sleepHours: rec ? getTotalSleepHours(rec) : 0,
+          condition: rec ? rec.condition : 3
+        });
       }
       return arr;
     }
@@ -1168,6 +1474,8 @@
           goalHours: Number(localStorage.getItem(GOAL_KEY)) || 0,
           sleepRange: "",
           sleepHours: 0,
+          sleepSegments: [],
+          fatigueMemo: "",
           checks: [],
           schedules: [],
           wakeCount: 0,
@@ -1176,6 +1484,8 @@
         };
         records.push(rec);
       }
+      if (!Array.isArray(rec.sleepSegments)) rec.sleepSegments = [];
+      if (typeof rec.fatigueMemo !== "string") rec.fatigueMemo = rec.fatigueMemo == null ? "" : String(rec.fatigueMemo);
       if (!Array.isArray(rec.checks)) rec.checks = [];
       if (!Array.isArray(rec.schedules)) rec.schedules = [];
       ensureCheckIds(rec);
@@ -1205,22 +1515,38 @@
     function loadRecords() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) return JSON.parse(raw);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          let dirty = false;
+          parsed.forEach(r => {
+            if (normalizeRecordSleep(r)) dirty = true;
+          });
+          if (dirty) localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          return parsed;
+        }
         const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
         if (!legacy) return [];
         const old = JSON.parse(legacy);
-        return old.map(r => ({
+        const migrated = old.map(r => ({
           id: r.id || Date.now(),
           date: r.date,
           goalHours: 0,
           sleepRange: "",
           sleepHours: Number(r.sleepHours) || 0,
+          sleepSegments: [],
+          fatigueMemo: "",
           checks: [],
           schedules: [],
           wakeCount: Number(r.wakeCount) || 0,
           condition: Number(r.condition) || 3,
           recordedAt: r.recordedAt || new Date().toISOString()
         }));
+        let dirty = false;
+        migrated.forEach(r => {
+          if (normalizeRecordSleep(r)) dirty = true;
+        });
+        if (dirty) localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        return migrated;
       } catch (e) {
         return [];
       }
@@ -1295,11 +1621,16 @@
     }
 
     function getTodayOrLatestSleep() {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = localYMD(new Date());
       const todayRecord = records.find(r => r.date === today);
-      if (todayRecord) return Number(todayRecord.sleepHours) || 0;
+      if (todayRecord) {
+        normalizeRecordSleep(todayRecord);
+        return getTotalSleepHours(todayRecord);
+      }
       const latest = [...records].sort((a, b) => b.date.localeCompare(a.date))[0];
-      return latest ? Number(latest.sleepHours) || 0 : 0;
+      if (!latest) return 0;
+      normalizeRecordSleep(latest);
+      return getTotalSleepHours(latest);
     }
 
     function conditionText(score) {

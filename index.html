@@ -542,9 +542,9 @@
           </div>
           <div id="sleepCollapsible">
             <p class="record-time">기록 시각: <span id="recordTime"></span></p>
-            <div style="margin-top: 10px; display:none;">
+            <div style="margin-top: 10px;">
               <label for="recordDate">기록 날짜</label>
-              <input id="recordDate" type="date" disabled />
+              <input id="recordDate" type="date" />
             </div>
             <div class="row" style="margin-top: 10px;">
               <div>
@@ -563,10 +563,10 @@
             <div style="margin-top: 10px;">
               <button id="addSleepBtn" class="btn" type="button">수면기록 추가</button>
             </div>
-            <p id="sleepTotalHint" class="muted" style="margin-top: 10px;">오늘 누적 수면: -</p>
+            <p id="sleepTotalHint" class="muted" style="margin-top: 10px;">누적 수면: -</p>
             <ul id="sleepSegmentList" class="history-list" style="margin-top: 8px;"></ul>
             <div style="margin-top: 10px;">
-              <label for="fatigueMemo">오늘 피로/컨디션 비고 (선택, 분석에 반영)</label>
+              <label for="fatigueMemo">해당 날 피로/컨디션 비고 (선택, 분석에 반영)</label>
               <textarea id="fatigueMemo" placeholder="예: 야근, 시험 스트레스, 낮잠 짧음 등 적어도 되고 안 적어도 됩니다"></textarea>
             </div>
           </div>
@@ -829,6 +829,7 @@
       bindConditionPicker();
       bindGoalInput();
       bindSleepAutoCalc();
+      bindRecordDate();
       bindDailySaveGoalWakeMemo();
       bindAddSleepSegment();
       bindSleepToggle();
@@ -876,10 +877,34 @@
       });
     }
 
+    function bindRecordDate() {
+      const clampToMax = () => {
+        const max = localYMD(new Date());
+        els.recordDate.max = max;
+        if (els.recordDate.value && els.recordDate.value > max) els.recordDate.value = max;
+      };
+      clampToMax();
+      els.recordDate.addEventListener("change", () => {
+        clampToMax();
+        const date = els.recordDate.value;
+        if (!date) return;
+        hydrateTodayForm(date);
+        renderChecksForDate(date);
+        renderAll();
+      });
+    }
+
+    function sleepTotalHintPrefix(dateStr) {
+      const today = localYMD(new Date());
+      return dateStr === today ? "오늘 누적 수면" : dateStr + " 누적 수면";
+    }
+
     function bindSleepAutoCalc() {
       els.sleepRange.addEventListener("input", () => {
         const h = calcSleepHoursFromRange(els.sleepRange.value);
-        els.sleepHoursAuto.value = Number.isFinite(h) ? trimHour(h) + "시간" : "";
+        if (els.sleepHoursAuto) {
+          els.sleepHoursAuto.value = Number.isFinite(h) ? trimHour(h) + "시간" : "";
+        }
       });
     }
 
@@ -1047,6 +1072,7 @@
     function initDefaults() {
       const now = new Date();
       const nowDate = localYMD(now);
+      els.recordDate.max = nowDate;
       els.recordDate.value = nowDate;
       els.scheduleRange.value = "";
       updateRecordTime();
@@ -1064,6 +1090,9 @@
         if (els.fatigueMemo) els.fatigueMemo.value = "";
         els.sleepRange.value = "";
         if (els.sleepHoursAuto) els.sleepHoursAuto.value = "";
+        const g = localStorage.getItem(GOAL_KEY);
+        els.goalHoursInput.value = g && Number(g) > 0 ? g : "8";
+        els.todayWakeCount.value = "0";
         renderSleepSegmentsForDate(date);
         return;
       }
@@ -1086,11 +1115,11 @@
       els.sleepSegmentList.innerHTML = "";
       if (!record || !Array.isArray(record.sleepSegments) || !record.sleepSegments.length) {
         els.sleepSegmentList.innerHTML = "<li class='history-item muted'>등록된 수면 구간이 없습니다. 시간을 입력하고 <strong>수면기록 추가</strong>를 눌러 주세요.</li>";
-        els.sleepTotalHint.textContent = "오늘 누적 수면: 0시간";
+        els.sleepTotalHint.textContent = sleepTotalHintPrefix(date) + ": 0시간";
         return;
       }
       const total = getTotalSleepHours(record);
-      els.sleepTotalHint.textContent = "오늘 누적 수면: " + trimHour(total) + "시간 (" + record.sleepSegments.length + "구간)";
+      els.sleepTotalHint.textContent = sleepTotalHintPrefix(date) + ": " + trimHour(total) + "시간 (" + record.sleepSegments.length + "구간)";
       record.sleepSegments.forEach(seg => {
         const li = document.createElement("li");
         li.className = "history-item";
@@ -1156,6 +1185,7 @@
       const hh = String(now.getHours()).padStart(2, "0");
       const mm = String(now.getMinutes()).padStart(2, "0");
       els.recordTime.textContent = y + "-" + m + "-" + d + " " + hh + ":" + mm;
+      if (els.recordDate) els.recordDate.max = y + "-" + m + "-" + d;
     }
 
     function renderAll() {
